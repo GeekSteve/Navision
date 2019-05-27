@@ -1,0 +1,3728 @@
+OBJECT Codeunit 50001 SpotCash
+{
+  OBJECT-PROPERTIES
+  {
+    Date=05/20/19;
+    Time=[ 3:20:19 PM];
+    Modified=Yes;
+    Version List=;
+  }
+  PROPERTIES
+  {
+    OnRun=BEGIN
+          END;
+
+  }
+  CODE
+  {
+    VAR
+      Member@1000 : Record 18;
+      Account@1001 : Record 23;
+      SPotcashMembers@1002 : Record 50111;
+      SPotcashMembers2@1142 : Record 50111;
+      LoanBalance@1082 : Decimal;
+      AvailableBalance@1081 : Decimal;
+      UnClearedBalance@1080 : Decimal;
+      LoanSecurity@1079 : Decimal;
+      LoanGuaranteed@1078 : Decimal;
+      DefaultBatch@1077 : Record 232;
+      GLPosting@1076 : Codeunit 12;
+      window@1075 : Dialog;
+      TellerSetup@1074 : Record 50063;
+      TransactionCoinage@1073 : Record 50049;
+      Members@1072 : Record 23;
+      TransactionTypes@1071 : Record 50045;
+      TransactionCharges@1070 : Record 50061;
+      TCharges@1069 : Decimal;
+      LineNo@1068 : Integer;
+      GenLedgerSetup@1066 : Record 98;
+      Vendor7@1141 : Record 23;
+      MinAccBal@1065 : Decimal;
+      FeeBelowMinBal@1064 : Decimal;
+      AccountNo@1063 : Code[30];
+      AccountOpening@1062 : Record 50071;
+      NewAccount@1061 : Boolean;
+      TreasuryTellerSetup@1060 : Record 50058;
+      CurrentTellerAmount@1059 : Decimal;
+      TellerTill@1058 : Record 270;
+      TellerTiedTill@1057 : Record 50063;
+      IntervalPenalty@1056 : Decimal;
+      StandingOrders@1055 : Record 50070;
+      TiedTransactionsSTO@1054 : Record 50075;
+      AccountAmount@1053 : Decimal;
+      STODeduction@1052 : Decimal;
+      Charges@1051 : Record 50060;
+      "Total Deductions"@1050 : Decimal;
+      STODeductedAmount@1049 : Decimal;
+      STORegister@1048 : Record 50079;
+      AccountNoticeTypes@1047 : Record 50065;
+      NoticeAmount@1046 : Decimal;
+      TransactionLimits@1045 : Record 50044;
+      AccountNotices@1044 : Record 50066;
+      Cust@1043 : Record 18;
+      AccountHolders@1042 : Record 23;
+      ChargesOnFD@1041 : Decimal;
+      LoanGuarantor@1040 : Record 50084;
+      LoanApp@1039 : Record 50004;
+      TotalGuaranted@1038 : Decimal;
+      VarAmtHolder@1037 : Decimal;
+      chqtransactions@1036 : Record 50048;
+      TotalUnprocessed@1035 : Decimal;
+      CustAcc@1034 : Record 18;
+      AmtAfterWithdrawal@1033 : Decimal;
+      TransactionsRec@1032 : Record 50048;
+      LoansOffset@1031 : Record 50094;
+      LoansTotal@1030 : Decimal;
+      Interest@1029 : Decimal;
+      LoanAppForm@1028 : Record 50004;
+      LoanTypes@1027 : Record 50002;
+      InterestRate@1026 : Decimal;
+      OBal@1025 : Decimal;
+      Principal@1024 : Decimal;
+      GeneralSetup@1023 : Record 50011;
+      ATMTrans@1022 : Decimal;
+      ATMBalance@1021 : Decimal;
+      CoinageBalances@1020 : Record 50100;
+      TotalBal@1019 : Decimal;
+      DenominationsRec@1018 : Record 50047;
+      CoinageAdjDetails@1017 : Record 50049;
+      FOSAL@1016 : Record 50004;
+      OUTSTBal@1015 : Decimal;
+      Advances@1014 : Record 50004;
+      IsOfficeAddin@1013 : Boolean;
+      BookBalance@1012 : Decimal;
+      GLSETUP@1011 : Record 98;
+      AccountLedger@1010 : Record 25;
+      iterate@1009 : Integer;
+      ATMEntries@1008 : Record 50107;
+      ATMS@1007 : Record 50106;
+      ATMEntries2@1006 : Record 50107;
+      GenJournalLine2@1005 : Record 81;
+      GenJournalLine@1004 : Record 81;
+      MAccounts@1003 : Record 23;
+      SPotcashWithdrawalCharge@1083 : Decimal;
+      scharges@1084 : Record 50060;
+      ATMRegister@1085 : Record 50106;
+      MemberAcc@1086 : Record 23;
+      SpotCashEntries@1087 : Record 50109;
+      Bal@1088 : Decimal;
+      SCaccounts@1090 : Record 23;
+      VendorLedgerEntry@1091 : Record 25;
+      GenJournalLine5@1092 : Record 81;
+      GenJournalLine1@1093 : Record 81;
+      balanc@1094 : Decimal;
+      Trancharges@1095 : Decimal;
+      ELoan@1096 : Codeunit 50014;
+      LoanProductTypes@1097 : Record 50002;
+      Vendor@1098 : Record 23;
+      AccountTypes2@1099 : Record 50046;
+      AccountTypes@1067 : Record 50046;
+      NWDs@1100 : Decimal;
+      SMSNotificationRegistration@1101 : Record 50264;
+      Vendor2@1102 : Record 23;
+      Bal1@1103 : Decimal;
+      Bal2@1104 : Decimal;
+      Bal3@1105 : Decimal;
+      Fromdate@1106 : Date;
+      Todate@1107 : Date;
+      TeaPayouts@1108 : Record 50116;
+      Bal4@1109 : Decimal;
+      RemainingAmount@1110 : Decimal;
+      LoanApplications@1111 : Record 50004;
+      Inte@1112 : Decimal;
+      Gnljnline@1113 : Record 81;
+      Gnljnline5@1114 : Record 81;
+      ActualInterest@1115 : Decimal;
+      Gnljnline2@1116 : Record 81;
+      VendorLedgerEntry2@1117 : Record 25;
+      GLEntry@1118 : Record 17;
+      GLEntry2@1120 : Record 17;
+      Months@1119 : Integer;
+      SalaryHeader@1121 : Record 50123;
+      SalaryLines@1122 : Record 50124;
+      Netsalary@1123 : Decimal;
+      Dimensioncode@1124 : Code[30];
+      Amt2@1125 : Decimal;
+      Amt@1089 : Decimal;
+      STAmounts@1126 : Decimal;
+      Loanrepayment@1127 : Decimal;
+      GetLoanBals@1128 : Codeunit 50009;
+      PrincipalDue@1129 : Decimal;
+      IntrestDue@1130 : Decimal;
+      Gnljnline3@1131 : Record 81;
+      AccountsReversalExcempt@1132 : Record 50208;
+      MemberLoanRepaymentSchedule@1133 : Record 50008;
+      SDate@1134 : Date;
+      LoanApplicationCard@1135 : Page 50072;
+      MemberLoanRepaymentSchedule2@1136 : Record 50008;
+      datediff@1137 : Integer;
+      finalnet@1138 : Decimal;
+      apploanproduct@1139 : Code[50];
+      orequest@1140 : Code[20];
+      GeneralSetUp7@1143 : Record 50011;
+      Processingfee@1144 : Decimal;
+      TempPhoneNo@1155 : Code[20];
+      FinalPhone@1154 : Code[20];
+      SpotCashRegistration@1153 : Record 50111;
+      FOSASetup@1152 : Record 50050;
+      TempMemberNo@1151 : Code[20];
+      NoSeriesManagement@1150 : Codeunit 396;
+      MemberNo@1149 : Code[20];
+      FullName@1148 : Text;
+      Ok@1147 : Boolean;
+      TempAcc@1146 : Code[20];
+      SavingsAcc@1145 : Code[20];
+      Customer@1156 : Record 18;
+      ReqID@1159 : Code[20];
+      DimensionValueBD@1158 : Record 349;
+      MemberApplications@1157 : Record 50117;
+
+    PROCEDURE Spotcash@1(VAR request_id@1000 : Code[10];VAR phone_no@1001 : Code[50];VAR transaction_type@1002 : Integer;VAR amount@1003 : Text;VAR charges@1004 : Text;VAR "account _number"@1006 : Code[50];VAR cr_account@1007 : Code[50];VAR status@1009 : Text[50];VAR f_key@1010 : Code[50];VAR balance@1011 : Text;VAR message@1012 : Text[500];VAR response@1005 : Text[50];VAR "response message"@1008 : Text[100];VAR membername@1013 : Text[200]);
+    BEGIN
+      //Added by James
+      // Spotcash Non Member Deposit===================================================================================
+       IF transaction_type=600 THEN BEGIN
+
+          // DELETE ANY LINE ITEM THAT MAY BE PRESENT
+            GenJournalLine.RESET;
+            GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+            GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",'SpotCash');
+            GenJournalLine.DELETEALL;
+
+            IF DefaultBatch.GET('PURCHASES','SpotCash') THEN
+            DefaultBatch.DELETE;
+
+            //POSTING MAIN TRANSACTION
+
+            DefaultBatch.INIT;
+            DefaultBatch."Journal Template Name":='PURCHASES';
+            DefaultBatch.Name:='SpotCash';
+            DefaultBatch.INSERT;
+
+            GenJournalLine.INIT;
+            GenJournalLine."Journal Template Name":='PURCHASES';
+            GenJournalLine."Journal Batch Name":='SpotCash';
+            GenJournalLine."Document No.":=request_id;
+            GenJournalLine."External Document No.":=request_id;
+            GenJournalLine."Line No.":=10000;
+
+            IF cr_account='' THEN BEGIN
+            GenJournalLine."Account Type":=GenJournalLine."Account Type"::Vendor;
+            SCaccounts.GET(SPotcashMembers."Account No");
+            GenJournalLine."Account No.":=SCaccounts."No.";
+            END ELSE BEGIN
+            GenJournalLine."Account Type":=GenJournalLine."Account Type"::Vendor;
+            IF Vendor7.GET(cr_account) THEN BEGIN
+            GenJournalLine."Account No.":=cr_account;
+              IF Cust.GET(Vendor7."Owner Member No") THEN BEGIN
+                Dimensioncode:=Cust."Global Dimension 1 Code";
+              END;
+            membername:=Vendor7.Name;
+            END ELSE BEGIN
+            GeneralSetup.GET;
+            GenJournalLine."Account No.":=GeneralSetup."Non Member Holding Account";
+            END;
+            END;
+
+            GenJournalLine.VALIDATE(GenJournalLine."Account No.");
+
+            AccountHolders.RESET;
+            AccountHolders.SETRANGE(AccountHolders."No.",cr_account);
+            IF AccountHolders.FIND('-') THEN BEGIN
+            GenJournalLine."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+            GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 1 Code");
+            GenJournalLine."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+            GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 2 Code");
+            END;
+            GenJournalLine."Posting Date":=TODAY;
+
+            ///////////////
+            AccountHolders.RESET;
+            AccountHolders.SETRANGE(AccountHolders."No.",Members."No.");
+            IF AccountHolders.FIND('-') THEN BEGIN
+            GenJournalLine."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+            GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 1 Code");
+            GenJournalLine."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+            GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 2 Code");
+            END;
+            GenJournalLine.Description:=FORMAT(phone_no)+'-PAYBILL-'+FORMAT(cr_account)+' Deposit';
+            //GenJournalLine."Currency Code":="Currency Code";
+            GenJournalLine.VALIDATE(GenJournalLine."Currency Code");
+            EVALUATE(GenJournalLine.Amount,amount);
+            GenJournalLine.Amount:=-GenJournalLine.Amount;
+            GenJournalLine.VALIDATE(GenJournalLine.Amount);
+            GenJournalLine."Bal. Account Type":=GenJournalLine."Bal. Account Type"::"G/L Account";
+            GeneralSetup.GET;
+            IF STRPOS(GenJournalLine.Description,'PAYBILL')>0 THEN BEGIN
+            GenJournalLine."Bal. Account No.":=GeneralSetup."Paybill Settlement Control A/C"
+            END
+              ELSE BEGIN
+            GenJournalLine."Bal. Account No.":=GeneralSetup."SpotCash Control Account";
+             END;
+            GenJournalLine.VALIDATE(GenJournalLine."Bal. Account No.");
+            GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 1 Code",Dimensioncode);
+            IF GenJournalLine.Amount<>0 THEN
+              GenJournalLine.INSERT;
+
+            //POST TRANSACTIONS
+            GenJournalLine.RESET;
+            GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+            GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",'SpotCash');
+            CODEUNIT.RUN(CODEUNIT::"Gen. Jnl.-Post",GenJournalLine);
+            IF Account."No."<>'' THEN BEGIN
+            CalcAvailableBalance(Account."No.");
+            balance:=FORMAT(AvailableBalance);
+            END;
+
+           { SPotcashMembers2.RESET;
+            SPotcashMembers2.SETRANGE("Account No",cr_account);
+            IF SPotcashMembers2.FINDFIRST THEN
+              membername  :=SPotcashMembers2."Member Name";}
+
+            status:='1';
+            response:='00';
+            "response message":='success';
+            EXIT;
+       END;
+
+
+      //Get Account
+      SpotCashEntries.SETRANGE("Request ID",request_id);
+      IF SpotCashEntries.FIND('-') THEN BEGIN
+      response:='14';
+        "response message":='Duplicate transaction';
+                EXIT;
+      END;
+
+      VendorLedgerEntry.RESET;
+      VendorLedgerEntry.SETRANGE("Document No.",request_id);
+      IF VendorLedgerEntry.FIND('-') THEN BEGIN
+      response:='14';
+        "response message":='Duplicate transaction';
+                EXIT;
+      END;
+
+      GLEntry.RESET;
+      GLEntry.SETRANGE("Document No.",request_id);
+      IF GLEntry.FIND('-') THEN BEGIN
+      response:='14';
+        "response message":='Duplicate transaction';
+                EXIT;
+      END;
+
+      IF cr_account='' THEN BEGIN
+      SPotcashMembers.RESET;
+      SPotcashMembers.SETRANGE("Phone No",phone_no);
+      IF NOT SPotcashMembers.FIND('-') THEN BEGIN
+        response:='10';
+        "response message":='phone Number not linked';
+                EXIT;
+      END;
+      {IF SPotcashMembers."SpotCash Status"<>SPotcashMembers.Status:: THEN BEGIN
+      response:='10';
+        "response message":='Member not Approved';
+                EXIT;
+      END;}
+
+      END;
+      SPotcashMembers.RESET;
+      SPotcashMembers.SETRANGE("Phone No",phone_no);
+      IF NOT SPotcashMembers.FIND('-') THEN BEGIN
+        response:='10';
+        "response message":='phone Number not linked';
+                EXIT;
+      END;
+      SPotcashMembers.RESET;
+      SPotcashMembers.SETRANGE("Phone No",phone_no);
+      IF SPotcashMembers.FIND('-') THEN BEGIN
+        Account.GET(SPotcashMembers."Account No");
+        Account.CALCFIELDS("Balance (LCY)");
+      IF Member.GET(Account."Owner Member No") THEN BEGIN
+      Dimensioncode:=Member."Global Dimension 1 Code";
+      END;
+      SpotCashEntries.INIT;
+      SpotCashEntries."Request ID":=request_id;
+      SpotCashEntries."Phone No":=phone_no;
+      SpotCashEntries."Transaction Type":=transaction_type;
+      IF amount<>''THEN BEGIN
+      EVALUATE(SpotCashEntries.Amount,amount);
+      END;
+      IF charges<>''THEN BEGIN
+      EVALUATE(SpotCashEntries.Charges,charges);
+      END;
+      SpotCashEntries."Account No":="account _number";
+      SpotCashEntries."Cr Account No":=cr_account;
+      SpotCashEntries.Status:=status;
+      SpotCashEntries."F Key":=f_key;
+      IF balance<>'' THEN BEGIN
+      EVALUATE(SpotCashEntries.Balance,balance);
+      END;
+      SpotCashEntries.Message:=message;
+      SpotCashEntries."Transaction Date":=TODAY;
+      SpotCashEntries."Transaction Time":=TIME;
+      SpotCashEntries.INSERT;
+
+
+
+
+      // Spotcash withdrawal
+        IF transaction_type=1 THEN BEGIN
+             CalcAvailableBalance(Account."No.");
+             IF Account."Account Remarks"<>'' THEN BEGIN
+           balance:=FORMAT(AvailableBalance);
+           response:='22';
+            "response message":='Transaction Failed,Contact the nearest Ollin Sacco Branch';
+            EXIT;
+          END;
+          IF Account.Status<>Account.Status::Active THEN BEGIN
+            response:='02';
+            "response message":='Account Inactive';
+            EXIT;
+          END;
+              GeneralSetup.GET;
+
+              scharges.RESET;
+              scharges.SETRANGE(Code,GeneralSetup."Mobile Banking Withdrawal");
+              IF scharges.FIND('-') THEN BEGIN
+              Bal:=AvailableBalance-scharges."Charge Amount";
+               EVALUATE(Amt,amount);
+              IF Bal<Amt THEN BEGIN
+                balance:=FORMAT(AvailableBalance);
+                response:='01';
+                "response message":='Insufficient Funds';
+                EXIT;
+              END;
+              END ELSE BEGIN
+              EVALUATE(Amt,amount);
+              IF AvailableBalance<Amt THEN BEGIN
+                balance:=FORMAT(AvailableBalance);
+                response:='01';
+                "response message":='Insufficient Funds';
+                EXIT;
+              END;
+
+
+
+              //post withdrawal
+              // DELETE ANY LINE ITEM THAT MAY BE PRESENT
+                GenJournalLine.RESET;
+                GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+                GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",'SpotCash');
+                GenJournalLine.DELETEALL;
+
+                IF DefaultBatch.GET('PURCHASES','SpotCash') THEN
+                DefaultBatch.DELETE;
+
+                //POSTING MAIN TRANSACTION
+
+                DefaultBatch.INIT;
+                DefaultBatch."Journal Template Name":='PURCHASES';
+                DefaultBatch.Name:='SpotCash';
+                DefaultBatch.INSERT;
+
+                GenJournalLine.INIT;
+                GenJournalLine."Journal Template Name":='PURCHASES';
+                GenJournalLine."Journal Batch Name":='SpotCash';
+                GenJournalLine."Document No.":=request_id;
+                GenJournalLine."External Document No.":=request_id;
+                GenJournalLine5.RESET;
+                GenJournalLine5.SETRANGE("Journal Template Name",'PURCHASES');
+                GenJournalLine5.SETRANGE("Journal Batch Name",'SpotCash');
+                IF GenJournalLine5.FIND('+') THEN BEGIN
+                GenJournalLine."Line No.":=GenJournalLine5."Line No."+10000;
+                END;
+                GenJournalLine."Account Type":=GenJournalLine."Account Type"::Vendor;
+                GenJournalLine."Account No.":=Account."No.";
+                GenJournalLine.VALIDATE(GenJournalLine."Account No.");
+                GenJournalLine."Posting Date":=TODAY;
+
+                ///////////////
+                AccountHolders.RESET;
+                AccountHolders.SETRANGE(AccountHolders."No.",Members."No.");
+                IF AccountHolders.FIND('-') THEN BEGIN
+                GenJournalLine."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+                GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 1 Code");
+                GenJournalLine."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+                GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 2 Code");
+                END;
+                GenJournalLine.Description:=FORMAT(phone_no)+'-Spotcash Withdrawal';
+                //GenJournalLine."Currency Code":="Currency Code";
+                GenJournalLine.VALIDATE(GenJournalLine."Currency Code");
+
+                EVALUATE(GenJournalLine.Amount,amount);
+
+
+                GenJournalLine.VALIDATE(GenJournalLine.Amount);
+
+                GenJournalLine."Bal. Account Type":=GenJournalLine."Bal. Account Type"::"G/L Account";
+                GeneralSetup.GET;
+                GenJournalLine."Bal. Account No.":=GeneralSetup."SpotCash Control Account";
+                GenJournalLine.VALIDATE(GenJournalLine."Bal. Account No.");
+                GenJournalLine.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+                IF GenJournalLine.Amount<>0 THEN
+                  GenJournalLine.INSERT;
+                //END;
+
+              ///Postcharges
+              //Main charge
+             { GenJournalLine.RESET;
+              GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+              GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",'SpotCash');
+              GenJournalLine.DELETEALL;
+
+              IF DefaultBatch.GET('PURCHASES','SpotCash') THEN
+              DefaultBatch.DELETE;
+
+              DefaultBatch.RESET;
+              DefaultBatch."Journal Template Name":='PURCHASES';
+              DefaultBatch.Name:='SpotCash';
+              DefaultBatch.INSERT;}
+              //posting main charge
+              GenJournalLine2.INIT;
+              GenJournalLine2."Journal Template Name":='PURCHASES';
+              GenJournalLine2."Journal Batch Name":='SpotCash';
+              GenJournalLine2."Document No.":=request_id;
+              GenJournalLine5.RESET;
+              GenJournalLine5.SETRANGE("Journal Template Name",'PURCHASES');
+              GenJournalLine5.SETRANGE("Journal Batch Name",'SpotCash');
+              IF GenJournalLine5.FIND('+') THEN BEGIN
+              GenJournalLine2."Line No.":=GenJournalLine5."Line No."+10000;
+              END;
+              //GenJournalLine."Line No.":=LineNo;
+
+              GenJournalLine2."Posting Date":=TODAY;
+              GenJournalLine2.Description:=FORMAT(phone_no)+'-Sacco Withdrawal Charges';
+
+              GenJournalLine2."Account Type":=GenJournalLine2."Account Type"::Vendor;
+              GenJournalLine2."Account No.":=Account."No.";
+                AccountHolders.RESET;
+                AccountHolders.SETRANGE(AccountHolders."No.",Account."No.");
+                IF AccountHolders.FIND('-') THEN BEGIN
+                GenJournalLine2."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+                GenJournalLine2.VALIDATE(GenJournalLine2."Shortcut Dimension 1 Code");
+                GenJournalLine2."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+                GenJournalLine2.VALIDATE(GenJournalLine2."Shortcut Dimension 2 Code");
+                END;
+              TransactionTypes.RESET;
+              TransactionTypes.SETRANGE(Type,TransactionTypes.Type::SpotCashWithdrawal);
+              IF TransactionTypes.FIND('-') THEN BEGIN
+                 Amt2:=0;
+                EVALUATE(Amt2,amount);
+                TransactionCharges.RESET;
+                TransactionCharges.SETRANGE("Transaction Type",TransactionTypes.Code);
+                TransactionCharges.SETFILTER("Minimum Amount",'<=%1',Amt2);
+                TransactionCharges.SETFILTER("Maximum Amount",'>=%1',Amt2);
+                IF TransactionCharges.FIND('-') THEN BEGIN
+                 // GenJournalLine2."Account No.":=TransactionCharges."GL Account";
+                  GenJournalLine2.Amount:=(TransactionCharges."Charge Amount")+TransactionCharges."Settlement Amount"+(TransactionCharges."Excise %"/100)*TransactionCharges."Charge Amount";
+                  GenJournalLine2.Amount:=GenJournalLine2.Amount;
+                END;
+                GenJournalLine2.VALIDATE(GenJournalLine2.Amount);
+              END;
+            //END;
+
+              GenJournalLine2.VALIDATE(GenJournalLine2.Amount);
+             // GenJournalLine2."Bal. Account Type":=GenJournalLine2."Bal. Account Type"::"G/L Account";
+              //GenJournalLine2."Bal. Account No.":=scharges."GL Account";
+              GenJournalLine2.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+              IF GenJournalLine2.Amount<>0 THEN
+                GenJournalLine2.INSERT;
+              END;
+
+              {GenJournalLine2.INIT;
+              GenJournalLine2."Journal Template Name":='PURCHASES';
+              GenJournalLine2."Journal Batch Name":='SpotCash';
+              GenJournalLine2."Document No.":=request_id;
+              GenJournalLine5.RESET;
+              GenJournalLine5.SETRANGE("Journal Template Name",'PURCHASES');
+              GenJournalLine5.SETRANGE("Journal Batch Name",'SpotCash');
+              IF GenJournalLine5.FIND('+') THEN BEGIN
+              GenJournalLine2."Line No.":=GenJournalLine5."Line No."+10000;
+              END;
+              //GenJournalLine."Line No.":=LineNo;
+
+              GenJournalLine2."Posting Date":=TODAY;
+              GenJournalLine2.Description:=FORMAT(phone_no)+'-Mobile Withdrawal Charge';
+
+              GenJournalLine2."Account Type":=GenJournalLine2."Account Type"::Vendor;
+              GenJournalLine2."Account No.":=Account."No.";
+                AccountHolders.RESET;
+                AccountHolders.SETRANGE(AccountHolders."No.",Members."No.");
+                IF AccountHolders.FIND('-') THEN BEGIN
+                GenJournalLine2."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+                GenJournalLine2.VALIDATE(GenJournalLine2."Shortcut Dimension 1 Code");
+                GenJournalLine2."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+                GenJournalLine2.VALIDATE(GenJournalLine2."Shortcut Dimension 2 Code");
+                END;
+              TransactionTypes.RESET;
+              TransactionTypes.SETRANGE(Type,TransactionTypes.Type::SpotWith);
+              IF TransactionTypes.FIND('-') THEN BEGIN
+                Amt2:=0;
+                EVALUATE(Amt2,amount);
+                TransactionCharges.RESET;
+                TransactionCharges.SETRANGE("Transaction Type",TransactionTypes.Code);
+                TransactionCharges.SETFILTER("Minimum Amount",'<=%1',Amt2);
+                TransactionCharges.SETFILTER("Maximum Amount",'>=%1',Amt2);
+                IF TransactionCharges.FIND('-') THEN BEGIN
+                 // GenJournalLine2."Account No.":=TransactionCharges."GL Account";
+                  GenJournalLine2.Amount:=TransactionCharges."Settlement Amount";
+                  GenJournalLine2.Amount:=GenJournalLine2.Amount;
+                END;
+                GenJournalLine2.VALIDATE(GenJournalLine2.Amount);
+              END;
+            //END;
+
+              GenJournalLine2.VALIDATE(GenJournalLine2.Amount);
+             // GenJournalLine2."Bal. Account Type":=GenJournalLine2."Bal. Account Type"::"G/L Account";
+              //GenJournalLine2."Bal. Account No.":=scharges."GL Account";
+              GenJournalLine2.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+              IF GenJournalLine2.Amount<>0 THEN
+                GenJournalLine2.INSERT;}
+             // END;
+
+            //post sacco charge
+            GenJournalLine.RESET;
+            GenJournalLine.INIT;
+            GenJournalLine."Journal Template Name":='PURCHASES';
+            GenJournalLine."Journal Batch Name":='SpotCash';
+            GenJournalLine."Document No.":=request_id;
+            GenJournalLine5.RESET;
+            GenJournalLine5.SETRANGE("Journal Template Name",'PURCHASES');
+            GenJournalLine5.SETRANGE("Journal Batch Name",'SpotCash');
+            IF GenJournalLine5.FIND('+') THEN BEGIN
+            GenJournalLine."Line No.":=GenJournalLine5."Line No."+10000;
+            END;
+            //GenJournalLine."Line No.":=LineNo;
+            GenJournalLine."Posting Date":=TODAY;
+            GenJournalLine.Description:=FORMAT(phone_no)+'-SpotCash Withdrawal Charges';
+            GenJournalLine."Account Type":=GenJournalLine."Account Type"::"G/L Account";
+            AccountHolders.RESET;
+                AccountHolders.SETRANGE(AccountHolders."No.",Members."No.");
+                IF AccountHolders.FIND('-') THEN BEGIN
+                GenJournalLine."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+                GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 1 Code");
+                GenJournalLine."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+                GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 2 Code");
+                END;
+            TransactionTypes.RESET;
+            TransactionTypes.SETRANGE(Type,TransactionTypes.Type::SpotCashWithdrawal);
+            IF TransactionTypes.FIND('-') THEN BEGIN
+                Amt2:=0;
+                EVALUATE(Amt2,amount);
+              TransactionCharges.RESET;
+              TransactionCharges.SETRANGE("Transaction Type",TransactionTypes.Code);
+              TransactionCharges.SETFILTER("Minimum Amount",'<=%1',Amt2);
+              TransactionCharges.SETFILTER("Maximum Amount",'>=%1',Amt2);
+              IF TransactionCharges.FIND('-') THEN BEGIN
+
+                GenJournalLine."Account No.":=TransactionCharges."GL Account";
+                GenJournalLine.Amount:=-TransactionCharges."Charge Amount";
+                GenJournalLine.VALIDATE(GenJournalLine.Amount);
+              END;
+            END;
+            GenJournalLine.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+            IF GenJournalLine.Amount<>0 THEN
+            GenJournalLine.INSERT;
+
+         //post excise duty
+
+
+
+                GenJournalLine2.RESET;
+                GenJournalLine2.INIT;
+                GenJournalLine2."Journal Template Name":='PURCHASES';
+                GenJournalLine2."Journal Batch Name":='SpotCash';
+                GenJournalLine2."Document No.":=request_id;
+                GenJournalLine5.RESET;
+                GenJournalLine5.SETRANGE("Journal Template Name",'PURCHASES');
+                GenJournalLine5.SETRANGE("Journal Batch Name",'SpotCash');
+                IF GenJournalLine5.FIND('+') THEN BEGIN
+                GenJournalLine2."Line No.":=GenJournalLine5."Line No."+10000;
+                END;
+                //GenJournalLine."Line No.":=LineNo;
+                GenJournalLine2."Posting Date":=TODAY;
+                GenJournalLine2.Description:=FORMAT(phone_no)+'-SpotCash Withdrawal excise duty';
+                GenJournalLine2."Account Type":=GenJournalLine1."Account Type"::"G/L Account";
+                AccountHolders.RESET;
+                AccountHolders.SETRANGE(AccountHolders."No.",Account."No.");
+                IF AccountHolders.FIND('-') THEN BEGIN
+                GenJournalLine2."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+                GenJournalLine2.VALIDATE(GenJournalLine2."Shortcut Dimension 1 Code");
+                GenJournalLine2."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+                GenJournalLine2.VALIDATE(GenJournalLine2."Shortcut Dimension 2 Code");
+                END;
+                TransactionTypes.RESET;
+                TransactionTypes.SETRANGE(Type,TransactionTypes.Type::SpotCashWithdrawal);
+                IF TransactionTypes.FIND('-') THEN BEGIN
+                Amt2:=0;
+                EVALUATE(Amt2,amount);
+                TransactionCharges.RESET;
+                TransactionCharges.SETRANGE("Transaction Type",TransactionTypes.Code);
+                TransactionCharges.SETFILTER("Minimum Amount",'<=%1',Amt2);
+                TransactionCharges.SETFILTER("Maximum Amount",'>=%1',Amt2);
+                IF TransactionCharges.FIND('-') THEN BEGIN
+
+                  GenJournalLine2."Account No.":=TransactionCharges."Excise G/L Account";
+                  GenJournalLine2.Amount:=(TransactionCharges."Excise %"/100)*TransactionCharges."Charge Amount";
+                  GenJournalLine2.Amount:=-GenJournalLine2.Amount;
+                  GenJournalLine2.VALIDATE(GenJournalLine2.Amount);
+                END;
+                END;
+                GenJournalLine2.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+                IF GenJournalLine2.Amount<>0 THEN
+                GenJournalLine2.INSERT;
+            //post settlement charge
+
+
+                GenJournalLine1.RESET;
+                GenJournalLine1.INIT;
+                GenJournalLine1."Journal Template Name":='PURCHASES';
+                GenJournalLine1."Journal Batch Name":='SpotCash';
+                GenJournalLine1."Document No.":=request_id;
+                GenJournalLine5.RESET;
+                GenJournalLine5.SETRANGE("Journal Template Name",'PURCHASES');
+                GenJournalLine5.SETRANGE("Journal Batch Name",'SpotCash');
+                IF GenJournalLine5.FIND('+') THEN BEGIN
+                GenJournalLine1."Line No.":=GenJournalLine5."Line No."+10000;
+                END;
+                //GenJournalLine."Line No.":=LineNo;
+                GenJournalLine1."Posting Date":=TODAY;
+                GenJournalLine1.Description:=FORMAT(phone_no)+'-SpotCash Withdrawal Charges';
+                GenJournalLine1."Account Type":=GenJournalLine1."Account Type"::"G/L Account";
+                AccountHolders.RESET;
+                AccountHolders.SETRANGE(AccountHolders."No.",Account."No.");
+                IF AccountHolders.FIND('-') THEN BEGIN
+                GenJournalLine1."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+                GenJournalLine1.VALIDATE(GenJournalLine1."Shortcut Dimension 1 Code");
+                GenJournalLine1."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+                GenJournalLine1.VALIDATE(GenJournalLine1."Shortcut Dimension 2 Code");
+                END;
+                TransactionTypes.RESET;
+                TransactionTypes.SETRANGE(Type,TransactionTypes.Type::SpotCashWithdrawal);
+                IF TransactionTypes.FIND('-') THEN BEGIN
+                Amt2:=0;
+                EVALUATE(Amt2,amount);
+                TransactionCharges.RESET;
+                TransactionCharges.SETRANGE("Transaction Type",TransactionTypes.Code);
+                TransactionCharges.SETFILTER("Minimum Amount",'<=%1',Amt2);
+                TransactionCharges.SETFILTER("Maximum Amount",'>=%1',Amt2);
+                IF TransactionCharges.FIND('-') THEN BEGIN
+
+                  GenJournalLine1."Account No.":=TransactionCharges."Settlement GL Account";
+                  GenJournalLine1.Amount:=-TransactionCharges."Settlement Amount";
+                  GenJournalLine1.VALIDATE(GenJournalLine1.Amount);
+                END;
+                END;
+                GenJournalLine1.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+                IF GenJournalLine1.Amount<>0 THEN
+                GenJournalLine1.INSERT;
+
+              //POST TRANSACTIONS
+              GenJournalLine.RESET;
+              GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+              GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",'SpotCash');
+              CODEUNIT.RUN(CODEUNIT::"Gen. Jnl.-Post",GenJournalLine);
+
+              {GenJournalLine2.RESET;
+              GenJournalLine2.SETRANGE(GenJournalLine2."Journal Template Name",'PURCHASES');
+              GenJournalLine2.SETRANGE(GenJournalLine2."Journal Batch Name",'SptCh-CHGS');
+              CODEUNIT.RUN(CODEUNIT::"Gen. Jnl.-Post",GenJournalLine2); }
+              CalcAvailableBalance(Account."No.");
+              balance:=FORMAT(AvailableBalance);
+              status:='1';
+              response:='00';
+              "response message":='success';
+            END;
+
+       // Request for Balance
+        IF transaction_type=8 THEN BEGIN
+              CalcAvailableBalance(Account."No.");
+              GeneralSetup.GET;
+
+              //Get Minimum Balance 22.02.19 James
+              IF Vendor.GET(Account."No.") THEN;
+              IF AccountTypes.GET(Vendor."Account Type") THEN;
+
+              scharges.RESET;
+              scharges.SETRANGE(Code,GeneralSetup."Spotcash Application Charge");
+              IF scharges.FIND('-') THEN BEGIN
+              Bal:=AvailableBalance-scharges."Charge Amount";
+               //EVALUATE(Amt,acc);
+              IF Bal<AccountTypes."Minimum Balance" THEN BEGIN
+                balance:=FORMAT(AvailableBalance);
+                response:='01';
+                "response message":='Insufficient Funds';
+                EXIT;
+              END;
+              END;
+
+        SPotcashMembers.RESET;
+        SPotcashMembers.SETRANGE("Phone No",phone_no);
+        IF SPotcashMembers.FIND('-') THEN BEGIN
+          Account.GET(SPotcashMembers."Account No");
+
+          GenJournalLine.RESET;
+          GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+          GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",'SpotCash');
+          GenJournalLine.DELETEALL;
+
+          IF DefaultBatch.GET('PURCHASES','SpotCash') THEN
+          DefaultBatch.DELETE;
+
+          //POSTING MAIN TRANSACTION
+
+          DefaultBatch.INIT;
+          DefaultBatch."Journal Template Name":='PURCHASES';
+          DefaultBatch.Name:='SpotCash';
+          DefaultBatch.INSERT;
+
+              GenJournalLine2.INIT;
+              GenJournalLine2."Journal Template Name":='PURCHASES';
+              GenJournalLine2."Journal Batch Name":='SpotCash';
+              GenJournalLine2."Document No.":=request_id;
+              GenJournalLine5.RESET;
+              GenJournalLine5.SETRANGE("Journal Template Name",'PURCHASES');
+              GenJournalLine5.SETRANGE("Journal Batch Name",'SpotCash');
+              IF GenJournalLine5.FIND('+') THEN BEGIN
+              GenJournalLine2."Line No.":=GenJournalLine5."Line No."+10000;
+              END;
+              //GenJournalLine."Line No.":=LineNo;
+
+              GenJournalLine2."Posting Date":=TODAY;
+              GenJournalLine2.Description:=FORMAT(phone_no)+'-SpotCash Enquiry Charges';
+
+              GenJournalLine2."Account Type":=GenJournalLine2."Account Type"::Vendor;
+              GenJournalLine2."Account No.":=Account."No.";
+              AccountHolders.RESET;
+                AccountHolders.SETRANGE(AccountHolders."No.",Account."No.");
+                IF AccountHolders.FIND('-') THEN BEGIN
+                GenJournalLine2."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+                GenJournalLine2.VALIDATE(GenJournalLine2."Shortcut Dimension 1 Code");
+                GenJournalLine2."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+                GenJournalLine2.VALIDATE(GenJournalLine2."Shortcut Dimension 2 Code");
+                END;
+              TransactionTypes.RESET;
+              TransactionTypes.SETRANGE(Type,TransactionTypes.Type::SpotcashBalanceEnquiery);
+              IF TransactionTypes.FIND('-') THEN BEGIN
+                TransactionCharges.RESET;
+                TransactionCharges.SETRANGE("Transaction Type",TransactionTypes.Code);
+                IF TransactionCharges.FIND('-') THEN BEGIN
+                 // GenJournalLine2."Account No.":=TransactionCharges."GL Account";
+                  GenJournalLine2.Amount:=(TransactionCharges."Charge Amount"+TransactionCharges."Settlement Amount"+(TransactionCharges."Excise %"/100)*TransactionCharges."Charge Amount");
+                  GenJournalLine2.Amount:=GenJournalLine2.Amount;
+                END;
+                GenJournalLine2.VALIDATE(GenJournalLine2.Amount);
+              END;
+            //END;
+
+              GenJournalLine2.VALIDATE(GenJournalLine2.Amount);
+             // GenJournalLine2."Bal. Account Type":=GenJournalLine2."Bal. Account Type"::"G/L Account";
+              //GenJournalLine2."Bal. Account No.":=scharges."GL Account";
+              GenJournalLine2.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+              IF GenJournalLine2.Amount<>0 THEN
+                GenJournalLine2.INSERT;
+              END;
+
+            //post sacco charge
+            GenJournalLine.RESET;
+            GenJournalLine.INIT;
+            GenJournalLine."Journal Template Name":='PURCHASES';
+            GenJournalLine."Journal Batch Name":='SpotCash';
+            GenJournalLine."Document No.":=request_id;
+            GenJournalLine5.RESET;
+            GenJournalLine5.SETRANGE("Journal Template Name",'PURCHASES');
+            GenJournalLine5.SETRANGE("Journal Batch Name",'SpotCash');
+            IF GenJournalLine5.FIND('+') THEN BEGIN
+            GenJournalLine."Line No.":=GenJournalLine5."Line No."+10000;
+            END;
+            //GenJournalLine."Line No.":=LineNo;
+            GenJournalLine."Posting Date":=TODAY;
+            GenJournalLine.Description:=FORMAT(phone_no)+'-SpotCash Enquiry Charges';
+            GenJournalLine."Account Type":=GenJournalLine."Account Type"::"G/L Account";
+                AccountHolders.RESET;
+                AccountHolders.SETRANGE(AccountHolders."No.",Account."No.");
+                IF AccountHolders.FIND('-') THEN BEGIN
+                GenJournalLine."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+                GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 1 Code");
+                GenJournalLine."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+                GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 2 Code");
+                END;
+            TransactionTypes.RESET;
+            TransactionTypes.SETRANGE(Type,TransactionTypes.Type::SpotcashBalanceEnquiery);
+            IF TransactionTypes.FIND('-') THEN BEGIN
+              TransactionCharges.RESET;
+              TransactionCharges.SETRANGE("Transaction Type",TransactionTypes.Code);
+              IF TransactionCharges.FIND('-') THEN BEGIN
+
+                GenJournalLine."Account No.":=TransactionCharges."GL Account";
+                GenJournalLine.Amount:=-TransactionCharges."Charge Amount";
+                GenJournalLine.VALIDATE(GenJournalLine.Amount);
+              END;
+            END;
+            GenJournalLine.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+            IF GenJournalLine.Amount<>0 THEN
+            GenJournalLine.INSERT;
+
+
+
+            //post execize duty charge
+
+
+                GenJournalLine1.RESET;
+                GenJournalLine1.INIT;
+                GenJournalLine1."Journal Template Name":='PURCHASES';
+                GenJournalLine1."Journal Batch Name":='SpotCash';
+                GenJournalLine1."Document No.":=request_id;
+                GenJournalLine5.RESET;
+                GenJournalLine5.SETRANGE("Journal Template Name",'PURCHASES');
+                GenJournalLine5.SETRANGE("Journal Batch Name",'SpotCash');
+                IF GenJournalLine5.FIND('+') THEN BEGIN
+                GenJournalLine1."Line No.":=GenJournalLine5."Line No."+10000;
+                END;
+                //GenJournalLine."Line No.":=LineNo;
+                GenJournalLine1."Posting Date":=TODAY;
+                GenJournalLine1.Description:=FORMAT(phone_no)+'-SpotCash Enquiry Charges';
+                GenJournalLine1."Account Type":=GenJournalLine1."Account Type"::"G/L Account";
+                AccountHolders.RESET;
+                AccountHolders.SETRANGE(AccountHolders."No.",Account."No.");
+                IF AccountHolders.FIND('-') THEN BEGIN
+                GenJournalLine1."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+                GenJournalLine1.VALIDATE(GenJournalLine1."Shortcut Dimension 1 Code");
+                GenJournalLine1."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+                GenJournalLine1.VALIDATE(GenJournalLine1."Shortcut Dimension 2 Code");
+                END;
+                TransactionTypes.RESET;
+                TransactionTypes.SETRANGE(Type,TransactionTypes.Type::SpotcashBalanceEnquiery);
+                IF TransactionTypes.FIND('-') THEN BEGIN
+                TransactionCharges.RESET;
+                TransactionCharges.SETRANGE("Transaction Type",TransactionTypes.Code);
+                IF TransactionCharges.FIND('-') THEN BEGIN
+
+                  GenJournalLine1."Account No.":=TransactionCharges."Excise G/L Account";
+                  GenJournalLine1.Amount:=(TransactionCharges."Excise %"/100)*TransactionCharges."Charge Amount";
+                  GenJournalLine1.Amount:=-1*GenJournalLine1.Amount;
+                  GenJournalLine1.VALIDATE(GenJournalLine1.Amount);
+                END;
+                END;
+                GenJournalLine1.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+                IF GenJournalLine1.Amount<>0 THEN
+                GenJournalLine1.INSERT;
+
+              //POST TRANSACTIONS
+              GenJournalLine.RESET;
+              GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+              GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",'SpotCash');
+              CODEUNIT.RUN(CODEUNIT::"Gen. Jnl.-Post",GenJournalLine);
+              CalcAvailableBalance(Account."No.");
+              balance:=FORMAT(AvailableBalance);
+             response:='00';
+             "response message":='success';
+         END;
+        // END;
+
+
+      // Spotcash Deposit
+
+       IF transaction_type=5 THEN BEGIN
+
+              // DELETE ANY LINE ITEM THAT MAY BE PRESENT
+                GenJournalLine.RESET;
+                GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+                GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",'SpotCash');
+                GenJournalLine.DELETEALL;
+
+                IF DefaultBatch.GET('PURCHASES','SpotCash') THEN
+                DefaultBatch.DELETE;
+
+                //POSTING MAIN TRANSACTION
+
+                DefaultBatch.INIT;
+                DefaultBatch."Journal Template Name":='PURCHASES';
+                DefaultBatch.Name:='SpotCash';
+                DefaultBatch.INSERT;
+
+                GenJournalLine.INIT;
+                GenJournalLine."Journal Template Name":='PURCHASES';
+                GenJournalLine."Journal Batch Name":='SpotCash';
+                GenJournalLine."Document No.":=request_id;
+                GenJournalLine."External Document No.":=request_id;
+                GenJournalLine."Line No.":=10000;
+                SCaccounts.GET(SPotcashMembers."Account No");
+                GenJournalLine."Account Type":=GenJournalLine."Account Type"::Vendor;
+                GenJournalLine."Account No.":=SCaccounts."No.";
+                GenJournalLine.VALIDATE(GenJournalLine."Account No.");
+                GenJournalLine."Posting Date":=TODAY;
+
+                ///////////////
+                AccountHolders.RESET;
+                AccountHolders.SETRANGE(AccountHolders."No.",Members."No.");
+                IF AccountHolders.FIND('-') THEN BEGIN
+                GenJournalLine."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+                GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 1 Code");
+                GenJournalLine."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+                GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 2 Code");
+                END;
+                GenJournalLine.Description:=FORMAT(phone_no)+'-Spotcash Deposit';
+                //GenJournalLine."Currency Code":="Currency Code";
+                GenJournalLine.VALIDATE(GenJournalLine."Currency Code");
+                EVALUATE(GenJournalLine.Amount,amount);
+                GenJournalLine.Amount:=-GenJournalLine.Amount;
+
+
+                GenJournalLine.VALIDATE(GenJournalLine.Amount);
+
+                GenJournalLine."Bal. Account Type":=GenJournalLine."Bal. Account Type"::"G/L Account";
+                GeneralSetup.GET;
+                GenJournalLine."Bal. Account No.":=GeneralSetup."SpotCash Control Account";
+                GenJournalLine.VALIDATE(GenJournalLine."Bal. Account No.");
+                GenJournalLine.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+                IF GenJournalLine.Amount<>0 THEN
+                  GenJournalLine.INSERT;
+                  //POST TRANSACTIONS
+                  GenJournalLine.RESET;
+                  GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+                  GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",'SpotCash');
+                  CODEUNIT.RUN(CODEUNIT::"Gen. Jnl.-Post",GenJournalLine);
+                  CalcAvailableBalance(Account."No.");
+                  balance:=FORMAT(AvailableBalance);
+                  status:='1';
+                  response:='00';
+                  "response message":='success';
+                END;
+
+
+         // Reversal
+       IF transaction_type=100 THEN BEGIN
+
+              // DELETE ANY LINE ITEM THAT MAY BE PRESENT
+                GenJournalLine.RESET;
+                GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+                GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",'SpotCash');
+                GenJournalLine.DELETEALL;
+
+                IF DefaultBatch.GET('PURCHASES','SpotCash') THEN
+                DefaultBatch.DELETE;
+
+                //POSTING MAIN TRANSACTION
+
+                DefaultBatch.INIT;
+                DefaultBatch."Journal Template Name":='PURCHASES';
+                DefaultBatch.Name:='SpotCash';
+                DefaultBatch.INSERT;
+                GeneralSetup.GET;
+                orequest:=DELSTR(request_id,10,1);
+          GLEntry.RESET;
+          GLEntry.SETRANGE("Document No.",orequest);
+         // GLEntry.SETFILTER("G/L Account No.",'<>%1',GeneralSetup."Withdrawable Deposits G/L Acc");
+          //GLEntry.SETFILTER("G/L Account No.",'<>%1','200-101|200-102|200-103|200-104|200-105|200-106|200-107|200-108|200-109|200-100|200-111');
+          IF GLEntry.FINDSET THEN BEGIN
+            REPEAT
+                AccountsReversalExcempt.RESET;
+                AccountsReversalExcempt.SETRANGE(Account,GLEntry."G/L Account No.");
+                IF NOT AccountsReversalExcempt.FINDFIRST THEN BEGIN
+                GenJournalLine.INIT;
+                GenJournalLine."Journal Template Name":='PURCHASES';
+                GenJournalLine."Journal Batch Name":='SpotCash';
+                GenJournalLine."Document No.":=request_id;
+                GenJournalLine."External Document No.":=request_id;
+                GenJournalLine5.RESET;
+                GenJournalLine5.SETRANGE("Journal Template Name",'PURCHASES');
+                GenJournalLine5.SETRANGE("Journal Batch Name",'SpotCash');
+                IF GenJournalLine5.FIND('+') THEN BEGIN
+                GenJournalLine."Line No.":=GenJournalLine5."Line No."+10000;
+                END;
+                GenJournalLine."Account Type":=GenJournalLine."Account Type"::"G/L Account";
+                GenJournalLine."Account No.":=GLEntry."G/L Account No.";
+                GenJournalLine.VALIDATE(GenJournalLine."Account No.");
+                GenJournalLine."Posting Date":=TODAY;
+                GenJournalLine."Shortcut Dimension 1 Code":=GLEntry."Global Dimension 1 Code";
+                GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 1 Code");
+                GenJournalLine.Description:=FORMAT(phone_no)+'-Spotcash Reversal';
+                //GenJournalLine."Currency Code":="Currency Code";
+                //GenJournalLine.VALIDATE(GenJournalLine."Currency Code");
+               /// EVALUATE(GenJournalLine.Amount,amount);
+                GenJournalLine.Amount:=-1*GLEntry.Amount;
+                GenJournalLine.VALIDATE(GenJournalLine.Amount);
+                GenJournalLine."Bal. Account Type":=GenJournalLine."Bal. Account Type"::Vendor;
+                GLEntry2.RESET;
+                GLEntry2.SETRANGE("Document No.",orequest);
+                GLEntry2.SETRANGE("Bal. Account Type",GLEntry2."Bal. Account Type"::Vendor);
+                IF GLEntry2.FIND('-') THEN BEGIN
+                GenJournalLine."Bal. Account No.":=GLEntry2."Bal. Account No.";
+                END;
+                GenJournalLine.VALIDATE(GenJournalLine."Bal. Account No.");
+                GenJournalLine.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+                IF GenJournalLine.Amount<>0 THEN
+                  GenJournalLine.INSERT;
+              END;
+             UNTIL GLEntry.NEXT=0;
+
+          END;
+
+               //POST TRANSACTIONS
+                  GenJournalLine.RESET;
+                  GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+                  GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",'SpotCash');
+                  IF GenJournalLine.FIND('-') THEN BEGIN
+                    CODEUNIT.RUN(CODEUNIT::"Gen. Jnl.-Post",GenJournalLine);
+                    CalcAvailableBalance(Account."No.");
+                    balance:=FORMAT(AvailableBalance);
+                    status:='1';
+                    response:='00';
+                    "response message":='success';
+                    END;
+                END;
+
+
+        //Buy Airtime
+         IF transaction_type=3 THEN BEGIN
+              CalcAvailableBalance(Account."No.");
+              GeneralSetup.GET;
+              IF Account."Account Remarks"<>'' THEN BEGIN
+           balance:=FORMAT(AvailableBalance);
+           response:='01';
+            "response message":='Transaction Failed, Contact the nearest Ollin Sacco Branch';
+            EXIT;
+          END;
+          IF Account.Status<>Account.Status::Active THEN BEGIN
+            response:='02';
+            "response message":='Account Inactive';
+            EXIT;
+          END;
+            //  scharges.RESET;
+             // scharges.SETRANGE(Code,GeneralSetup."Mobile Banking Withdrawal");
+             // IF scharges.FIND('-') THEN BEGIN
+              Bal:=AvailableBalance;
+               EVALUATE(Amt,amount);
+              IF Bal<Amt THEN BEGIN
+                balance:=FORMAT(AvailableBalance);
+                response:='01';
+                "response message":='Insufficient Funds';
+                EXIT;
+              END;
+              //post airtime
+              // DELETE ANY LINE ITEM THAT MAY BE PRESENT
+                GenJournalLine.RESET;
+                GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+                GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",'SpotCash');
+                GenJournalLine.DELETEALL;
+
+                IF DefaultBatch.GET('PURCHASES','SpotCash') THEN
+                DefaultBatch.DELETE;
+
+                //POSTING MAIN TRANSACTION
+
+                DefaultBatch.INIT;
+                DefaultBatch."Journal Template Name":='PURCHASES';
+                DefaultBatch.Name:='SpotCash';
+                DefaultBatch.INSERT;
+
+                GenJournalLine.INIT;
+                GenJournalLine."Journal Template Name":='PURCHASES';
+                GenJournalLine."Journal Batch Name":='SpotCash';
+                GenJournalLine."Document No.":=request_id;
+                GenJournalLine."External Document No.":=request_id;
+                GenJournalLine."Line No.":=10000;
+                GenJournalLine."Account Type":=GenJournalLine."Account Type"::Vendor;
+                GenJournalLine."Account No.":=Account."No.";
+                GenJournalLine.VALIDATE(GenJournalLine."Account No.");
+                GenJournalLine."Posting Date":=TODAY;
+
+                ///////////////
+                AccountHolders.RESET;
+                AccountHolders.SETRANGE(AccountHolders."No.",Members."No.");
+                IF AccountHolders.FIND('-') THEN BEGIN
+                GenJournalLine."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+                GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 1 Code");
+                GenJournalLine."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+                GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 2 Code");
+                END;
+                GenJournalLine.Description:=FORMAT(phone_no)+'-Spotcash Airtime Purchase';
+                //GenJournalLine."Currency Code":="Currency Code";
+                GenJournalLine.VALIDATE(GenJournalLine."Currency Code");
+
+                EVALUATE(GenJournalLine.Amount,amount);
+
+
+                GenJournalLine.VALIDATE(GenJournalLine.Amount);
+
+                GenJournalLine."Bal. Account Type":=GenJournalLine."Bal. Account Type"::"G/L Account";
+                GeneralSetup.GET;
+                GenJournalLine."Bal. Account No.":=GeneralSetup."SpotCash Control Account";
+                GenJournalLine.VALIDATE(GenJournalLine."Bal. Account No.");
+                GenJournalLine.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+                IF GenJournalLine.Amount<>0 THEN
+                  GenJournalLine.INSERT;
+                //END;
+
+
+              //POST TRANSACTIONS
+              GenJournalLine.RESET;
+              GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+              GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",'SpotCash');
+              CODEUNIT.RUN(CODEUNIT::"Gen. Jnl.-Post",GenJournalLine);
+              CalcAvailableBalance(Account."No.");
+              balance:=FORMAT(AvailableBalance);
+              status:='1';
+              response:='00';
+              "response message":='success';
+            //END;
+            END;
+
+       // Request Ministatement
+       IF transaction_type=12 THEN BEGIN
+          AccountLedger.RESET;
+          AccountLedger.SETCURRENTKEY("Posting Date");
+          AccountLedger.ASCENDING(FALSE);
+          AccountLedger.SETRANGE(AccountLedger."Vendor No.",Account."No.");
+          IF AccountLedger.FINDSET(FALSE,FALSE) THEN BEGIN
+          iterate:=0;
+           REPEAT
+             IF iterate<5 THEN BEGIN
+                AccountLedger.CALCFIELDS(Amount);
+                message:=FORMAT(AccountLedger."Posting Date")+'|'+AccountLedger.Description+'|'+FORMAT(-1*AccountLedger.Amount)+'#'+message;
+                iterate:=iterate+1;
+             END ELSE BEGIN
+
+               //EXIT;
+              END;
+                UNTIL AccountLedger.NEXT=0;
+                GenJournalLine.RESET;
+          GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+          GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",'SpotCash');
+          GenJournalLine.DELETEALL;
+
+          IF DefaultBatch.GET('PURCHASES','SpotCash') THEN
+          DefaultBatch.DELETE;
+
+          //POSTING MAIN TRANSACTION
+
+          DefaultBatch.INIT;
+          DefaultBatch."Journal Template Name":='PURCHASES';
+          DefaultBatch.Name:='SpotCash';
+          DefaultBatch.INSERT;
+
+              GenJournalLine2.INIT;
+              GenJournalLine2."Journal Template Name":='PURCHASES';
+              GenJournalLine2."Journal Batch Name":='SpotCash';
+              GenJournalLine2."Document No.":=request_id;
+              GenJournalLine5.RESET;
+              GenJournalLine5.SETRANGE("Journal Template Name",'PURCHASES');
+              GenJournalLine5.SETRANGE("Journal Batch Name",'SpotCash');
+              IF GenJournalLine5.FIND('+') THEN BEGIN
+              GenJournalLine2."Line No.":=GenJournalLine5."Line No."+10000;
+              END;
+              //GenJournalLine."Line No.":=LineNo;
+
+              GenJournalLine2."Posting Date":=TODAY;
+              GenJournalLine2.Description:=FORMAT(phone_no)+'-SpotCash Ministatement Charges';
+
+              GenJournalLine2."Account Type":=GenJournalLine2."Account Type"::Vendor;
+              GenJournalLine2."Account No.":=Account."No.";
+              AccountHolders.RESET;
+                AccountHolders.SETRANGE(AccountHolders."No.",Account."No.");
+                IF AccountHolders.FIND('-') THEN BEGIN
+                GenJournalLine2."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+                GenJournalLine2.VALIDATE(GenJournalLine2."Shortcut Dimension 1 Code");
+                GenJournalLine2."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+                GenJournalLine2.VALIDATE(GenJournalLine2."Shortcut Dimension 2 Code");
+                END;
+              TransactionTypes.RESET;
+              TransactionTypes.SETRANGE(Type,TransactionTypes.Type::SpotWith);
+              IF TransactionTypes.FIND('-') THEN BEGIN
+                TransactionCharges.RESET;
+                TransactionCharges.SETRANGE("Transaction Type",TransactionTypes.Code);
+                IF TransactionCharges.FIND('-') THEN BEGIN
+                 // GenJournalLine2."Account No.":=TransactionCharges."GL Account";
+                  GenJournalLine2.Amount:=(TransactionCharges."Charge Amount"+(TransactionCharges."Excise %"/100)*TransactionCharges."Charge Amount");
+                  GenJournalLine2.Amount:=GenJournalLine2.Amount;
+                END;
+                GenJournalLine2.VALIDATE(GenJournalLine2.Amount);
+              END;
+            //END;
+
+              GenJournalLine2.VALIDATE(GenJournalLine2.Amount);
+             // GenJournalLine2."Bal. Account Type":=GenJournalLine2."Bal. Account Type"::"G/L Account";
+              //GenJournalLine2."Bal. Account No.":=scharges."GL Account";
+              GenJournalLine2.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+              IF GenJournalLine2.Amount<>0 THEN
+                GenJournalLine2.INSERT;
+              END;
+
+            //post sacco charge
+            GenJournalLine.RESET;
+            GenJournalLine.INIT;
+            GenJournalLine."Journal Template Name":='PURCHASES';
+            GenJournalLine."Journal Batch Name":='SpotCash';
+            GenJournalLine."Document No.":=request_id;
+            GenJournalLine5.RESET;
+            GenJournalLine5.SETRANGE("Journal Template Name",'PURCHASES');
+            GenJournalLine5.SETRANGE("Journal Batch Name",'SpotCash');
+            IF GenJournalLine5.FIND('+') THEN BEGIN
+            GenJournalLine."Line No.":=GenJournalLine5."Line No."+10000;
+            END;
+            //GenJournalLine."Line No.":=LineNo;
+            GenJournalLine."Posting Date":=TODAY;
+            GenJournalLine.Description:=FORMAT(phone_no)+'-SpotCash Ministatement Charges';
+            GenJournalLine."Account Type":=GenJournalLine."Account Type"::"G/L Account";
+            AccountHolders.RESET;
+            AccountHolders.SETRANGE(AccountHolders."No.",Account."No.");
+            IF AccountHolders.FIND('-') THEN BEGIN
+            GenJournalLine."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+            GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 1 Code");
+            GenJournalLine."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+            GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 2 Code");
+            END;
+            TransactionTypes.RESET;
+            TransactionTypes.SETRANGE(Type,TransactionTypes.Type::SpotWith);
+            IF TransactionTypes.FIND('-') THEN BEGIN
+              TransactionCharges.RESET;
+              TransactionCharges.SETRANGE("Transaction Type",TransactionTypes.Code);
+              IF TransactionCharges.FIND('-') THEN BEGIN
+
+                GenJournalLine."Account No.":=TransactionCharges."GL Account";
+                GenJournalLine.Amount:=-TransactionCharges."Charge Amount";
+                GenJournalLine.VALIDATE(GenJournalLine.Amount);
+              END;
+            END;
+            GenJournalLine.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+            IF GenJournalLine.Amount<>0 THEN
+            GenJournalLine.INSERT;
+
+
+
+            //post execize duty charge
+
+
+                GenJournalLine1.RESET;
+                GenJournalLine1.INIT;
+                GenJournalLine1."Journal Template Name":='PURCHASES';
+                GenJournalLine1."Journal Batch Name":='SpotCash';
+                GenJournalLine1."Document No.":=request_id;
+                GenJournalLine5.RESET;
+                GenJournalLine5.SETRANGE("Journal Template Name",'PURCHASES');
+                GenJournalLine5.SETRANGE("Journal Batch Name",'SpotCash');
+                IF GenJournalLine5.FIND('+') THEN BEGIN
+                GenJournalLine1."Line No.":=GenJournalLine5."Line No."+10000;
+                END;
+                //GenJournalLine."Line No.":=LineNo;
+                GenJournalLine1."Posting Date":=TODAY;
+                GenJournalLine1.Description:=FORMAT(phone_no)+'-SpotCash Ministatement Charges';
+                GenJournalLine1."Account Type":=GenJournalLine1."Account Type"::"G/L Account";
+                AccountHolders.RESET;
+                AccountHolders.SETRANGE(AccountHolders."No.",Account."No.");
+                IF AccountHolders.FIND('-') THEN BEGIN
+                GenJournalLine1."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+                GenJournalLine1.VALIDATE(GenJournalLine1."Shortcut Dimension 1 Code");
+                GenJournalLine1."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+                GenJournalLine1.VALIDATE(GenJournalLine1."Shortcut Dimension 2 Code");
+                END;
+                TransactionTypes.RESET;
+                TransactionTypes.SETRANGE(Type,TransactionTypes.Type::SpotWith);
+                IF TransactionTypes.FIND('-') THEN BEGIN
+                TransactionCharges.RESET;
+                TransactionCharges.SETRANGE("Transaction Type",TransactionTypes.Code);
+                IF TransactionCharges.FIND('-') THEN BEGIN
+
+                  GenJournalLine1."Account No.":=TransactionCharges."Excise G/L Account";
+                  GenJournalLine1.Amount:=(TransactionCharges."Excise %"/100)*TransactionCharges."Charge Amount";
+                  GenJournalLine1.Amount:=-GenJournalLine1.Amount;
+                  GenJournalLine1.VALIDATE(GenJournalLine1.Amount);
+                END;
+                END;
+                GenJournalLine1.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+                IF GenJournalLine1.Amount<>0 THEN
+                GenJournalLine1.INSERT;
+
+              //POST TRANSACTIONS
+              GenJournalLine.RESET;
+              GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+              GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",'SpotCash');
+              CODEUNIT.RUN(CODEUNIT::"Gen. Jnl.-Post",GenJournalLine);
+                CalcAvailableBalance(Account."No.");
+                balance:=FORMAT(AvailableBalance);
+                status:='1';
+                response:='00';
+                "response message":='success';
+          END;
+
+      //Request Share Balance
+        IF transaction_type=9 THEN BEGIN
+        SPotcashMembers.RESET;
+        SPotcashMembers.SETRANGE("Phone No",phone_no);
+        IF SPotcashMembers.FIND('-') THEN BEGIN
+
+          Account.GET(SPotcashMembers."Account No");
+          Member.GET(Account."Owner Member No");
+          SCaccounts.RESET;
+          SCaccounts.SETRANGE("Owner Member No",Account."Owner Member No");
+          SCaccounts.SETFILTER("Account Type",'%1','BS102');
+          IF SCaccounts.FINDSET THEN BEGIN
+          REPEAT
+          SCaccounts.CALCFIELDS("Balance (LCY)");
+          balanc:=balanc+SCaccounts."Balance (LCY)";
+          UNTIL SCaccounts.NEXT=0;
+          END;
+
+          GenJournalLine.RESET;
+          GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+          GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",'SpotCash');
+          GenJournalLine.DELETEALL;
+
+          IF DefaultBatch.GET('PURCHASES','SpotCash') THEN
+          DefaultBatch.DELETE;
+
+          //POSTING MAIN TRANSACTION
+
+          DefaultBatch.INIT;
+          DefaultBatch."Journal Template Name":='PURCHASES';
+          DefaultBatch.Name:='SpotCash';
+          DefaultBatch.INSERT;
+
+              GenJournalLine2.INIT;
+              GenJournalLine2."Journal Template Name":='PURCHASES';
+              GenJournalLine2."Journal Batch Name":='SpotCash';
+              GenJournalLine2."Document No.":=request_id;
+              GenJournalLine5.RESET;
+              GenJournalLine5.SETRANGE("Journal Template Name",'PURCHASES');
+              GenJournalLine5.SETRANGE("Journal Batch Name",'SpotCash');
+              IF GenJournalLine5.FIND('+') THEN BEGIN
+              GenJournalLine2."Line No.":=GenJournalLine5."Line No."+10000;
+              END;
+              //GenJournalLine."Line No.":=LineNo;
+
+              GenJournalLine2."Posting Date":=TODAY;
+              GenJournalLine2.Description:=FORMAT(phone_no)+'-SpotCash Enquiry Charges';
+
+              GenJournalLine2."Account Type":=GenJournalLine2."Account Type"::Vendor;
+              GenJournalLine2."Account No.":=Account."No.";
+              AccountHolders.RESET;
+              AccountHolders.SETRANGE(AccountHolders."No.",Account."No.");
+              IF AccountHolders.FIND('-') THEN BEGIN
+              GenJournalLine2."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+              GenJournalLine2.VALIDATE(GenJournalLine2."Shortcut Dimension 1 Code");
+              GenJournalLine2."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+              GenJournalLine2.VALIDATE(GenJournalLine2."Shortcut Dimension 2 Code");
+              END;
+              TransactionTypes.RESET;
+              TransactionTypes.SETRANGE(Type,TransactionTypes.Type::SpotcashBalanceEnquiery);
+              IF TransactionTypes.FIND('-') THEN BEGIN
+                TransactionCharges.RESET;
+                TransactionCharges.SETRANGE("Transaction Type",TransactionTypes.Code);
+                IF TransactionCharges.FIND('-') THEN BEGIN
+                 // GenJournalLine2."Account No.":=TransactionCharges."GL Account";
+                  GenJournalLine2.Amount:=(TransactionCharges."Charge Amount"+(TransactionCharges."Excise %"/100)*TransactionCharges."Charge Amount");
+                  GenJournalLine2.Amount:=GenJournalLine2.Amount;
+                END;
+                GenJournalLine2.VALIDATE(GenJournalLine2.Amount);
+              END;
+            //END;
+
+              GenJournalLine2.VALIDATE(GenJournalLine2.Amount);
+             // GenJournalLine2."Bal. Account Type":=GenJournalLine2."Bal. Account Type"::"G/L Account";
+              //GenJournalLine2."Bal. Account No.":=scharges."GL Account";
+              GenJournalLine2.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+              IF GenJournalLine2.Amount<>0 THEN
+                GenJournalLine2.INSERT;
+              END;
+
+            //post sacco charge
+            GenJournalLine.RESET;
+            GenJournalLine.INIT;
+            GenJournalLine."Journal Template Name":='PURCHASES';
+            GenJournalLine."Journal Batch Name":='SpotCash';
+            GenJournalLine."Document No.":=request_id;
+            GenJournalLine5.RESET;
+            GenJournalLine5.SETRANGE("Journal Template Name",'PURCHASES');
+            GenJournalLine5.SETRANGE("Journal Batch Name",'SpotCash');
+            IF GenJournalLine5.FIND('+') THEN BEGIN
+            GenJournalLine."Line No.":=GenJournalLine5."Line No."+10000;
+            END;
+            //GenJournalLine."Line No.":=LineNo;
+            GenJournalLine."Posting Date":=TODAY;
+            GenJournalLine.Description:=FORMAT(phone_no)+'-SpotCash Enquiry Charges';
+            GenJournalLine."Account Type":=GenJournalLine."Account Type"::"G/L Account";
+            AccountHolders.RESET;
+            AccountHolders.SETRANGE(AccountHolders."No.",Account."No.");
+            IF AccountHolders.FIND('-') THEN BEGIN
+            GenJournalLine."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+            GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 1 Code");
+            GenJournalLine."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+            GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 2 Code");
+            END;
+            TransactionTypes.RESET;
+            TransactionTypes.SETRANGE(Type,TransactionTypes.Type::SpotcashBalanceEnquiery);
+            IF TransactionTypes.FIND('-') THEN BEGIN
+              TransactionCharges.RESET;
+              TransactionCharges.SETRANGE("Transaction Type",TransactionTypes.Code);
+              IF TransactionCharges.FIND('-') THEN BEGIN
+
+                GenJournalLine."Account No.":=TransactionCharges."GL Account";
+                GenJournalLine.Amount:=-TransactionCharges."Charge Amount";
+                GenJournalLine.VALIDATE(GenJournalLine.Amount);
+              END;
+            END;
+            GenJournalLine.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+            IF GenJournalLine.Amount<>0 THEN
+            GenJournalLine.INSERT;
+
+
+
+            //post execize duty
+
+
+                GenJournalLine1.RESET;
+                GenJournalLine1.INIT;
+                GenJournalLine1."Journal Template Name":='PURCHASES';
+                GenJournalLine1."Journal Batch Name":='SpotCash';
+                GenJournalLine1."Document No.":=request_id;
+                GenJournalLine5.RESET;
+                GenJournalLine5.SETRANGE("Journal Template Name",'PURCHASES');
+                GenJournalLine5.SETRANGE("Journal Batch Name",'SpotCash');
+                IF GenJournalLine5.FIND('+') THEN BEGIN
+                GenJournalLine1."Line No.":=GenJournalLine5."Line No."+10000;
+                END;
+                //GenJournalLine."Line No.":=LineNo;
+                GenJournalLine1."Posting Date":=TODAY;
+                GenJournalLine1.Description:=FORMAT(phone_no)+'-SpotCash Enquiry Charges';
+                GenJournalLine1."Account Type":=GenJournalLine1."Account Type"::"G/L Account";
+                AccountHolders.RESET;
+                AccountHolders.SETRANGE(AccountHolders."No.",Account."No.");
+                IF AccountHolders.FIND('-') THEN BEGIN
+                GenJournalLine1."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+                GenJournalLine1.VALIDATE(GenJournalLine1."Shortcut Dimension 1 Code");
+                GenJournalLine1."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+                GenJournalLine1.VALIDATE(GenJournalLine1."Shortcut Dimension 2 Code");
+                END;
+                TransactionTypes.RESET;
+                TransactionTypes.SETRANGE(Type,TransactionTypes.Type::SpotcashBalanceEnquiery);
+                IF TransactionTypes.FIND('-') THEN BEGIN
+                TransactionCharges.RESET;
+                TransactionCharges.SETRANGE("Transaction Type",TransactionTypes.Code);
+                IF TransactionCharges.FIND('-') THEN BEGIN
+
+                  GenJournalLine1."Account No.":=TransactionCharges."Excise G/L Account";
+                  GenJournalLine1.Amount:=(TransactionCharges."Excise %"/100)*TransactionCharges."Charge Amount";
+                  GenJournalLine1.Amount:=-GenJournalLine1.Amount;
+                  GenJournalLine1.VALIDATE(GenJournalLine1.Amount);
+                END;
+                END;
+                GenJournalLine1.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+                IF GenJournalLine1.Amount<>0 THEN
+                GenJournalLine1.INSERT;
+
+              //POST TRANSACTIONS
+              GenJournalLine.RESET;
+              GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+              GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",'SpotCash');
+              CODEUNIT.RUN(CODEUNIT::"Gen. Jnl.-Post",GenJournalLine);
+              //CalcAvailableBalance(Account."No.");
+              balance:=FORMAT(balanc);
+             response:='00';
+             "response message":='success';
+         END;
+      {
+      //Request Share Balance
+      IF transaction_type=9 THEN BEGIN
+        Bal:=0;
+        MemberAcc.RESET;
+        MemberAcc.SETRANGE("Owner Member No",Account."Owner Member No");
+        MemberAcc.SETFILTER("Account Type",'%1..%2','S01','S03');
+        IF MemberAcc.FINDSET THEN BEGIN
+             REPEAT
+                MemberAcc.CALCFIELDS("Balance (LCY)");
+                balanc:=balanc+MemberAcc."Balance (LCY)";
+              UNTIL MemberAcc.NEXT=0;
+        END ELSE BEGIN
+          status:='1';
+          response:='03';
+          "response message":='Account not found';
+        EXIT;
+        END;
+        END;
+        }
+
+      //Request E-Loan
+      IF transaction_type=16 THEN BEGIN
+             CalcAvailableBalance(Account."No.");
+              GeneralSetup.GET;
+              //99
+             { scharges.RESET;
+              scharges.SETRANGE(Code,GeneralSetup."Mobile Banking Withdrawal");
+              IF scharges.FIND('-') THEN BEGIN
+              Bal:=AvailableBalance-scharges."Charge Amount";
+               EVALUATE(Amt,amount);
+              IF Bal<Amt THEN BEGIN
+                balance:=FORMAT(AvailableBalance);
+                response:='01';
+                "response message":='Insufficient Funds';
+                EXIT;
+              END;
+           END;}
+            LoanProductTypes.RESET;
+            LoanProductTypes.SETRANGE("E-Loan",TRUE);
+            IF LoanProductTypes.FIND('-') THEN BEGIN
+             EVALUATE(Amt,amount);
+             IF Amt>LoanProductTypes."Max. Loan Amount" THEN BEGIN
+                 balance:=FORMAT(AvailableBalance);
+                 response:='11';
+                "response message":='The Maximum allowed amount is ksh '+FORMAT(LoanProductTypes."Max. Loan Amount");
+                EXIT;
+             END;
+
+             SPotcashMembers.RESET;
+             SPotcashMembers.SETRANGE("Phone No",phone_no);
+             IF NOT SPotcashMembers.FIND('-') THEN BEGIN
+               balance:=FORMAT(AvailableBalance);
+               response:='22';
+               "response message":='Visit your branch and register for the Service';
+               EXIT;
+             END;
+
+             Vendor.RESET;
+             Vendor.SETRANGE("Owner Member No",Account."Owner Member No");
+             Vendor.SETRANGE("Vendor Posting Group",'BS102');
+             IF Vendor.FIND('+') THEN BEGIN
+                Vendor.CALCFIELDS("Balance (LCY)");
+                IF Vendor."Balance (LCY)"<10000 THEN BEGIN
+                 balance:=FORMAT(AvailableBalance);
+                 response:='12';
+                "response message":='You must have deposits of atleast 10,000';
+                EXIT;
+                END
+             END;
+
+             {SMSNotificationRegistration.RESET;
+             SMSNotificationRegistration.SETRANGE("Phone No",phone_no);
+             SMSNotificationRegistration.SETRANGE("E-Loan Subscribed",TRUE);
+             IF NOT SMSNotificationRegistration.FIND('-') THEN BEGIN
+               balance:=FORMAT(AvailableBalance);
+               response:='22';
+               "response message":='Visit your branch and register for the Service';
+               EXIT;
+             END;}
+
+             NWDs:=0;
+             AccountTypes2.RESET;
+             AccountTypes2.SETRANGE("NWD Account",TRUE);
+             IF AccountTypes2.FINDSET THEN BEGIN
+             REPEAT
+                SCaccounts.RESET;
+                SCaccounts.SETRANGE("Account Type",AccountTypes2.Code);
+                IF SCaccounts.FIND('-') THEN BEGIN
+                  SCaccounts.CALCFIELDS("Balance (LCY)");
+                  NWDs:=NWDs+SCaccounts."Balance (LCY)";
+                END;
+              UNTIL AccountTypes2.NEXT=0;
+
+              IF NWDs<LoanProductTypes."MF Loan To Share" THEN BEGIN
+               balance:=FORMAT(AvailableBalance);
+                 response:='12';
+                "response message":='Amount higher than maximum allowed';
+                EXIT;
+              END;
+             END;
+
+             IF Amt<LoanProductTypes."Min. Loan Amount"THEN BEGIN
+                 balance:=FORMAT(AvailableBalance);
+                 response:='12';
+                "response message":='The minimum allowed amount is ksh '+FORMAT(LoanProductTypes."Min. Loan Amount");
+                EXIT;
+             END;
+
+
+
+              Months:=0;
+              Netsalary:=0;
+              STAmounts:=0;
+              Loanrepayment:=0;
+              PrincipalDue:=0;
+              IntrestDue:=0;
+
+              SalaryLines.RESET;
+              SalaryLines.SETRANGE("Account No.",Account."No.");
+              IF SalaryLines.FINDSET THEN BEGIN
+                REPEAT
+                 IF SalaryHeader.GET(SalaryLines."Document No.") THEN BEGIN
+                  IF SalaryHeader.Posted=TRUE THEN BEGIN
+                    IF (TODAY-SalaryHeader."Date Created")<=98  THEN BEGIN
+                      Months:=Months+1;
+                      Netsalary:=Netsalary+SalaryLines.Amount;
+                    END;
+                  END;
+                  END;
+              UNTIL SalaryLines.NEXT=0;
+              END;
+
+             IF Months<1 THEN BEGIN
+                 balance:=FORMAT(AvailableBalance);
+                 response:='12';
+                "response message":='You must have at least three consecutive salaries through the Sacco';
+                EXIT;
+              END;
+              IF Months<3 THEN BEGIN
+                 balance:=FORMAT(AvailableBalance);
+                 response:='12';
+                "response message":='You must have at least three consecutive salaries through the Sacco';
+                EXIT;
+              END;
+
+             IF Netsalary>0 THEN BEGIN
+             Netsalary:=Netsalary/Months;
+             END ELSE BEGIN
+                 balance:=FORMAT(AvailableBalance);
+                 response:='12';
+                "response message":='You must have at least three consecutive salaries through the Sacco';
+                EXIT;
+             END;
+
+             Vendor.RESET;
+             Vendor.SETRANGE("Owner Member No",Account."Owner Member No");
+             Vendor.SETRANGE("Vendor Posting Group",'FL358');
+             IF Vendor.FIND('+') THEN BEGIN
+                Vendor.CALCFIELDS("Balance (LCY)");
+                IF Vendor."Balance (LCY)"<0 THEN BEGIN
+                 balance:=FORMAT(AvailableBalance);
+                 response:='12';
+                "response message":='You have an outstanding e-Loan, Clear it to enjoy the service';
+                EXIT;
+                END
+             END;
+
+             Vendor.RESET;
+             Vendor.SETRANGE("Owner Member No",Account."Owner Member No");
+             Vendor.SETRANGE("Vendor Posting Group",'FL353');
+             IF Vendor.FIND('+') THEN BEGIN
+                Vendor.CALCFIELDS("Balance (LCY)");
+                IF Vendor."Balance (LCY)"<0 THEN BEGIN
+                 balance:=FORMAT(AvailableBalance);
+                 response:='12';
+                "response message":='You have an outstanding Okoa Loan, Clear it to enjoy the service';
+                EXIT;
+                END
+             END;
+
+             StandingOrders.RESET;
+             StandingOrders.SETRANGE("Source Account No",Account."No.");
+             //StandingOrders.SETFILTER("Effective / Start Date",'<=%1',Todate);
+             //StandingOrders.SETFILTER("Expected End Date",'>=%1',Todate);
+             //WHERE(Sent For Approval=CONST(Yes),Approved=CONST(Yes),STO Stopped=CONST(No))
+             StandingOrders.SETRANGE("Sent For Approval",StandingOrders."Sent For Approval"::Yes);
+             StandingOrders.SETRANGE(Approved,TRUE);
+             StandingOrders.SETRANGE("STO Stopped",FALSE);
+             IF StandingOrders.FINDSET THEN BEGIN
+              REPEAT
+                STAmounts:=STAmounts+StandingOrders."Deduction Amount";
+              UNTIL StandingOrders.NEXT=0;
+             END;
+
+
+
+            LoanApplications.RESET;
+            LoanApplications.SETRANGE("Member Code",Account."Owner Member No");
+            LoanApplications.SETRANGE(Posted,TRUE);
+            LoanApplications.CALCFIELDS("Oustanding Balance");
+            LoanApplications.SETFILTER("Oustanding Balance",'>%1',0);
+            LoanApplications.SETFILTER("Loan Product Type",'<>%1','');
+            LoanApplications.SETFILTER("Mode Of Payment",'%1|%2',LoanApplications."Mode Of Payment"::Salary,
+                                                                 LoanApplications."Mode Of Payment"::Pension);
+            //LoanApplications.SETFILTER("Loan Product Type",'<>%1','FL354','FL364');
+           // LoanApplications.SETFILTER("Loan Product Type",'%1..%2','FL351','FL370');
+            IF LoanApplications.FINDSET THEN BEGIN
+            PrincipalDue:=0;
+            IntrestDue:=0;
+                REPEAT
+                //ERROR(LoanApplications."Loan  No.");
+                //ERROR(LoanApplications."Loan Product Type");
+                IF ((LoanApplications."Loan Product Type"<>'FL354') OR (LoanApplications."Loan Product Type"<>'FL364')
+                   ) THEN BEGIN
+                //IF LoanApplications."Loan Product Type"<>'FL364' THEN BEGIN
+                             IF LoanProductTypes.GET(LoanApplications."Loan Product Type") THEN
+                             //IF LoanProductTypes."BackOffice/FrontOffice"=LoanProductTypes."BackOffice/FrontOffice"::"Front Office" THEN BEGIN
+                             //SDate:=CALCDATE ('<CM-1M+1D>', TODAY);
+                             //300119
+
+                              //300219
+                             SDate:=CALCDATE('<1M>',LoanApplications."Issued Date");
+
+                             //DMY2DATE(DATE2DMY(LoanApplications."Issued Date",1),DATE2DMY(TODAY,2),DATE2DMY(TODAY,3));
+                             //ERror('%1',SDate);
+                             MemberLoanRepaymentSchedule.RESET;
+                             MemberLoanRepaymentSchedule.SETRANGE("Loan No.",LoanApplications."Loan  No.");
+                             MemberLoanRepaymentSchedule.SETRANGE("Repayment Date",SDate);
+
+                             IF MemberLoanRepaymentSchedule.FIND('-') THEN BEGIN
+                                // PrincipalDue:=PrincipalDue+GetLoanBals.GetIntrestDue(LoanApplications."Loan  No.",'PRINCIPAL');
+                                 //IntrestDue:=IntrestDue+GetLoanBals.GetIntrestDue(LoanApplications."Loan  No.",'INTEREST');
+                                 PrincipalDue:=PrincipalDue+MemberLoanRepaymentSchedule."Principal Repayment";
+                                 IntrestDue:=IntrestDue+MemberLoanRepaymentSchedule."Monthly Interest";
+                                 END ELSE BEGIN
+                                 LoanApplicationCard.CalcScheduleglobal(LoanApplications."Loan  No.");
+                                 MemberLoanRepaymentSchedule2.RESET;
+                                 MemberLoanRepaymentSchedule2.SETRANGE("Loan No.",LoanApplications."Loan  No.");
+                                 MemberLoanRepaymentSchedule2.SETRANGE("Repayment Date",SDate);
+                                 IF MemberLoanRepaymentSchedule2.FIND('-') THEN BEGIN
+                                     PrincipalDue:=PrincipalDue+MemberLoanRepaymentSchedule2."Principal Repayment";
+                                     IntrestDue:=IntrestDue+MemberLoanRepaymentSchedule2."Monthly Interest";
+                                   END;
+                                    END;
+                                  //   END;
+                   //END;
+                   END;
+                UNTIL LoanApplications.NEXT=0;
+            END;
+            //ERROR('%1',Netsalary);
+            GeneralSetup.RESET;
+            GeneralSetup.GET;
+            GeneralSetup.TESTFIELD("Processing Fee");
+            GeneralSetup.TESTFIELD("Excise Duty Fee %");
+            Processingfee:=GeneralSetup."Processing Fee";  //100
+            Processingfee:=Processingfee+(Processingfee*GeneralSetup."Excise Duty Fee %"/100); //10%
+            //ERROR('%1',Processingfee);
+            Netsalary-=Processingfee; //33,429.93-100/33,329.93
+            Loanrepayment:=ABS(PrincipalDue)+ABS(IntrestDue); //ERROR('LR: %1',Loanrepayment);
+            Netsalary:=Netsalary-(STAmounts+Loanrepayment);
+            //ERROR('%1',Loanrepayment);
+             IF Amt>(0.75*Netsalary) THEN BEGIN
+                finalnet:=0.75*Netsalary;
+                 balance:=FORMAT(AvailableBalance);
+                 response:='12';
+                {"response message":='You do not qualify for the amount applied.'+
+                                     ' You qualify for KSH '+FORMAT(finalnet)+
+                                     ' STO Amount: '+FORMAT(STAmounts)+' Loan Repayments: '+FORMAT(Loanrepayment)+
+                                     ' Net Amount: '+FORMAT(Netsalary);}
+                      IF finalnet<0 THEN BEGIN
+                          finalnet:=0
+                      END;
+                "response message":='You do not qualify for the amount applied.'+
+                                     ' You qualify for Ksh. '+FORMAT(ROUND(finalnet,2));
+                EXIT;
+             END;
+
+            { Vendor.RESET;
+             Vendor.SETRANGE("Owner Member No",Account."Owner Member No");
+             Vendor.SETRANGE("Vendor Posting Group",'LN0005');
+             IF Vendor.FIND('+') THEN BEGIN
+                Vendor.CALCFIELDS("Balance (LCY)");
+                IF Vendor."Balance (LCY)"<>0 THEN BEGIN
+                 balance:=FORMAT(AvailableBalance);
+                 response:='12';
+                "response message":='You have an outstanding one month crop advance loan';
+                EXIT;
+                END;
+             END;}
+
+
+            END;
+
+           ELoan."E-Loan"(Account."No.",amount,phone_no);
+           CalcAvailableBalance(Account."No.");
+              balance:=FORMAT(AvailableBalance);
+              status:='1';
+              response:='00';
+              "response message":='success';
+        END;
+
+
+
+      //Request Savers
+      IF transaction_type=53 THEN BEGIN
+             CalcAvailableBalance(Account."No.");
+              GeneralSetup.GET;
+
+
+            LoanProductTypes.RESET;
+            LoanProductTypes.SETRANGE(Code,'FL374');
+            IF LoanProductTypes.FIND('-') THEN BEGIN
+             EVALUATE(Amt,amount);
+             IF Amt>LoanProductTypes."Max. Loan Amount" THEN BEGIN
+                 balance:=FORMAT(AvailableBalance);
+                 response:='11';
+                "response message":='The Maximum allowed amount is ksh '+FORMAT(LoanProductTypes."Max. Loan Amount");
+                EXIT;
+             END;
+
+             SPotcashMembers.RESET;
+             SPotcashMembers.SETRANGE("Phone No",phone_no);
+             IF NOT SPotcashMembers.FIND('-') THEN BEGIN
+               balance:=FORMAT(AvailableBalance);
+               response:='22';
+               "response message":='Visit your branch and register for the Service';
+               EXIT;
+             END;
+
+             Vendor.RESET;
+             Vendor.SETRANGE("Owner Member No",Account."Owner Member No");
+             Vendor.SETRANGE("Vendor Posting Group",'BS102');
+             IF Vendor.FIND('+') THEN BEGIN
+                Vendor.CALCFIELDS("Balance (LCY)");
+                IF (GeneralSetup."Savers Loan %"/100)*ABS(Vendor."Balance (LCY)")<Amt THEN BEGIN
+                 balance:=FORMAT(AvailableBalance);
+                 response:='12';
+                "response message":='You can only qualify for '+FORMAT((GeneralSetup."Savers Loan %"/100)*Vendor."Balance (LCY)")+' Ksh';
+                EXIT;
+                END
+             END;
+
+
+
+             IF Amt<LoanProductTypes."Min. Loan Amount"THEN BEGIN
+                 balance:=FORMAT(AvailableBalance);
+                 response:='12';
+                "response message":='The minimum allowed amount is ksh '+FORMAT(LoanProductTypes."Min. Loan Amount");
+                EXIT;
+             END;
+
+             Vendor.RESET;
+             Vendor.SETRANGE("Owner Member No",Account."Owner Member No");
+             Vendor.SETFILTER("Vendor Posting Group",'%1|%2|%3','FL354','FL364','FL374');//Modified by James 25/01/19
+             IF Vendor.FIND('+') THEN BEGIN
+                Vendor.CALCFIELDS("Balance (LCY)");
+                IF Vendor."Balance (LCY)"<>0 THEN BEGIN
+                 balance:=FORMAT(AvailableBalance);
+                 response:='12';
+                "response message":='You have an outstanding Savers Loan, Clear it to enjoy the service';
+                EXIT;
+                END
+             END;
+            END;
+
+           ELoan.Savers(Account."No.",amount,phone_no);
+           CalcAvailableBalance(Account."No.");
+              balance:=FORMAT(AvailableBalance);
+              status:='1';
+              response:='00';
+              "response message":='success';
+        END;
+
+
+      //Request savers eligibility
+        IF transaction_type=52 THEN BEGIN
+        SPotcashMembers.RESET;
+        SPotcashMembers.SETRANGE("Phone No",phone_no);
+        IF SPotcashMembers.FIND('-') THEN BEGIN
+
+          Account.GET(SPotcashMembers."Account No");
+          Member.GET(Account."Owner Member No");
+          SCaccounts.RESET;
+          SCaccounts.SETRANGE("Owner Member No",Account."Owner Member No");
+          SCaccounts.SETFILTER("Account Type",'%1','BS102');
+          IF SCaccounts.FINDSET THEN BEGIN
+          REPEAT
+          SCaccounts.CALCFIELDS("Balance (LCY)");
+          balanc:=balanc+SCaccounts."Balance (LCY)";
+          GeneralSetup.GET();
+          balanc:=(GeneralSetup."Savers Loan %"/100)*ABS(balanc);
+          UNTIL SCaccounts.NEXT=0;
+          END;
+
+          GenJournalLine.RESET;
+          GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+          GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",'SpotCash');
+          GenJournalLine.DELETEALL;
+
+          IF DefaultBatch.GET('PURCHASES','SpotCash') THEN
+          DefaultBatch.DELETE;
+
+          //POSTING MAIN TRANSACTION
+
+          DefaultBatch.INIT;
+          DefaultBatch."Journal Template Name":='PURCHASES';
+          DefaultBatch.Name:='SpotCash';
+          DefaultBatch.INSERT;
+
+              GenJournalLine2.INIT;
+              GenJournalLine2."Journal Template Name":='PURCHASES';
+              GenJournalLine2."Journal Batch Name":='SpotCash';
+              GenJournalLine2."Document No.":=request_id;
+              GenJournalLine5.RESET;
+              GenJournalLine5.SETRANGE("Journal Template Name",'PURCHASES');
+              GenJournalLine5.SETRANGE("Journal Batch Name",'SpotCash');
+              IF GenJournalLine5.FIND('+') THEN BEGIN
+              GenJournalLine2."Line No.":=GenJournalLine5."Line No."+10000;
+              END;
+              //GenJournalLine."Line No.":=LineNo;
+
+              GenJournalLine2."Posting Date":=TODAY;
+              GenJournalLine2.Description:=FORMAT(phone_no)+'-SpotCash Enquiry Charges';
+
+              GenJournalLine2."Account Type":=GenJournalLine2."Account Type"::Vendor;
+              GenJournalLine2."Account No.":=Account."No.";
+              AccountHolders.RESET;
+              AccountHolders.SETRANGE(AccountHolders."No.",Account."No.");
+              IF AccountHolders.FIND('-') THEN BEGIN
+              GenJournalLine2."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+              GenJournalLine2.VALIDATE(GenJournalLine2."Shortcut Dimension 1 Code");
+              GenJournalLine2."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+              GenJournalLine2.VALIDATE(GenJournalLine2."Shortcut Dimension 2 Code");
+              END;
+              TransactionTypes.RESET;
+              TransactionTypes.SETRANGE(Type,TransactionTypes.Type::SpotcashBalanceEnquiery);
+              IF TransactionTypes.FIND('-') THEN BEGIN
+                TransactionCharges.RESET;
+                TransactionCharges.SETRANGE("Transaction Type",TransactionTypes.Code);
+                IF TransactionCharges.FIND('-') THEN BEGIN
+                 // GenJournalLine2."Account No.":=TransactionCharges."GL Account";
+                  GenJournalLine2.Amount:=(TransactionCharges."Charge Amount"+(TransactionCharges."Excise %"/100)*TransactionCharges."Charge Amount");
+                  GenJournalLine2.Amount:=GenJournalLine2.Amount;
+                END;
+                GenJournalLine2.VALIDATE(GenJournalLine2.Amount);
+              END;
+            //END;
+
+              GenJournalLine2.VALIDATE(GenJournalLine2.Amount);
+             // GenJournalLine2."Bal. Account Type":=GenJournalLine2."Bal. Account Type"::"G/L Account";
+              //GenJournalLine2."Bal. Account No.":=scharges."GL Account";
+              GenJournalLine2.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+              IF GenJournalLine2.Amount<>0 THEN
+                GenJournalLine2.INSERT;
+              END;
+
+            //post sacco charge
+            GenJournalLine.RESET;
+            GenJournalLine.INIT;
+            GenJournalLine."Journal Template Name":='PURCHASES';
+            GenJournalLine."Journal Batch Name":='SpotCash';
+            GenJournalLine."Document No.":=request_id;
+            GenJournalLine5.RESET;
+            GenJournalLine5.SETRANGE("Journal Template Name",'PURCHASES');
+            GenJournalLine5.SETRANGE("Journal Batch Name",'SpotCash');
+            IF GenJournalLine5.FIND('+') THEN BEGIN
+            GenJournalLine."Line No.":=GenJournalLine5."Line No."+10000;
+            END;
+            //GenJournalLine."Line No.":=LineNo;
+            GenJournalLine."Posting Date":=TODAY;
+            GenJournalLine.Description:=FORMAT(phone_no)+'-SpotCash Enquiry Charges';
+            GenJournalLine."Account Type":=GenJournalLine."Account Type"::"G/L Account";
+            AccountHolders.RESET;
+            AccountHolders.SETRANGE(AccountHolders."No.",Account."No.");
+            IF AccountHolders.FIND('-') THEN BEGIN
+            GenJournalLine."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+            GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 1 Code");
+            GenJournalLine."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+            GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 2 Code");
+            END;
+            TransactionTypes.RESET;
+            TransactionTypes.SETRANGE(Type,TransactionTypes.Type::SpotcashBalanceEnquiery);
+            IF TransactionTypes.FIND('-') THEN BEGIN
+              TransactionCharges.RESET;
+              TransactionCharges.SETRANGE("Transaction Type",TransactionTypes.Code);
+              IF TransactionCharges.FIND('-') THEN BEGIN
+
+                GenJournalLine."Account No.":=TransactionCharges."GL Account";
+                GenJournalLine.Amount:=-TransactionCharges."Charge Amount";
+                GenJournalLine.VALIDATE(GenJournalLine.Amount);
+              END;
+            END;
+            GenJournalLine.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+            IF GenJournalLine.Amount<>0 THEN
+            GenJournalLine.INSERT;
+
+
+
+            //post execize duty
+
+
+                GenJournalLine1.RESET;
+                GenJournalLine1.INIT;
+                GenJournalLine1."Journal Template Name":='PURCHASES';
+                GenJournalLine1."Journal Batch Name":='SpotCash';
+                GenJournalLine1."Document No.":=request_id;
+                GenJournalLine5.RESET;
+                GenJournalLine5.SETRANGE("Journal Template Name",'PURCHASES');
+                GenJournalLine5.SETRANGE("Journal Batch Name",'SpotCash');
+                IF GenJournalLine5.FIND('+') THEN BEGIN
+                GenJournalLine1."Line No.":=GenJournalLine5."Line No."+10000;
+                END;
+                //GenJournalLine."Line No.":=LineNo;
+                GenJournalLine1."Posting Date":=TODAY;
+                GenJournalLine1.Description:=FORMAT(phone_no)+'-SpotCash Enquiry Charges';
+                GenJournalLine1."Account Type":=GenJournalLine1."Account Type"::"G/L Account";
+                AccountHolders.RESET;
+                AccountHolders.SETRANGE(AccountHolders."No.",Account."No.");
+                IF AccountHolders.FIND('-') THEN BEGIN
+                GenJournalLine1."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+                GenJournalLine1.VALIDATE(GenJournalLine1."Shortcut Dimension 1 Code");
+                GenJournalLine1."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+                GenJournalLine1.VALIDATE(GenJournalLine1."Shortcut Dimension 2 Code");
+                END;
+                TransactionTypes.RESET;
+                TransactionTypes.SETRANGE(Type,TransactionTypes.Type::SpotcashBalanceEnquiery);
+                IF TransactionTypes.FIND('-') THEN BEGIN
+                TransactionCharges.RESET;
+                TransactionCharges.SETRANGE("Transaction Type",TransactionTypes.Code);
+                IF TransactionCharges.FIND('-') THEN BEGIN
+
+                  GenJournalLine1."Account No.":=TransactionCharges."Excise G/L Account";
+                  GenJournalLine1.Amount:=(TransactionCharges."Excise %"/100)*TransactionCharges."Charge Amount";
+                  GenJournalLine1.Amount:=-GenJournalLine1.Amount;
+                  GenJournalLine1.VALIDATE(GenJournalLine1.Amount);
+                END;
+                END;
+                GenJournalLine1.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+                IF GenJournalLine1.Amount<>0 THEN
+                GenJournalLine1.INSERT;
+
+              //POST TRANSACTIONS
+              GenJournalLine.RESET;
+              GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+              GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",'SpotCash');
+              CODEUNIT.RUN(CODEUNIT::"Gen. Jnl.-Post",GenJournalLine);
+              //CalcAvailableBalance(Account."No.");
+              balance:=FORMAT(balanc);
+             response:='00';
+             "response message":='success';
+         END;
+
+      //Request Savers 2020 loan
+      IF transaction_type=70 THEN BEGIN
+             CalcAvailableBalance(Account."No.");
+              GeneralSetup.GET;
+
+
+            LoanProductTypes.RESET;
+            LoanProductTypes.SETRANGE(Code,'FL384');
+            IF LoanProductTypes.FIND('-') THEN BEGIN
+             EVALUATE(Amt,amount);
+             IF Amt>LoanProductTypes."Max. Loan Amount" THEN BEGIN
+                 balance:=FORMAT(AvailableBalance);
+                 response:='11';
+                "response message":='The Maximum allowed amount is ksh '+FORMAT(LoanProductTypes."Max. Loan Amount");
+                EXIT;
+             END;
+
+             SPotcashMembers.RESET;
+             SPotcashMembers.SETRANGE("Phone No",phone_no);
+             IF NOT SPotcashMembers.FIND('-') THEN BEGIN
+               balance:=FORMAT(AvailableBalance);
+               response:='22';
+               "response message":='Visit your branch and register for the Service';
+               EXIT;
+             END;
+
+             Vendor.RESET;
+             Vendor.SETRANGE("Owner Member No",Account."Owner Member No");
+             Vendor.SETRANGE("Vendor Posting Group",'BS102');
+             IF Vendor.FIND('+') THEN BEGIN
+                Vendor.CALCFIELDS("Balance (LCY)");
+                IF (GeneralSetup."Savers Loan 2020 %"/100)*ABS(Vendor."Balance (LCY)")<Amt THEN BEGIN
+                 balance:=FORMAT(AvailableBalance);
+                 response:='12';
+                "response message":='You can only qualify for '+FORMAT((GeneralSetup."Savers Loan 2020 %"/100)*Vendor."Balance (LCY)")+' Ksh';
+                EXIT;
+                END
+             END;
+
+
+
+             IF Amt<LoanProductTypes."Min. Loan Amount"THEN BEGIN
+                 balance:=FORMAT(AvailableBalance);
+                 response:='12';
+                "response message":='The minimum allowed amount is ksh '+FORMAT(LoanProductTypes."Min. Loan Amount");
+                EXIT;
+             END;
+
+             Vendor.RESET;
+             Vendor.SETRANGE("Owner Member No",Account."Owner Member No");
+             Vendor.SETFILTER("Vendor Posting Group",'%1|%2|%3','FL354','FL364','FL374','FL384');
+             IF Vendor.FIND('+') THEN BEGIN
+                Vendor.CALCFIELDS("Balance (LCY)");
+                IF Vendor."Balance (LCY)"<>0 THEN BEGIN
+                 balance:=FORMAT(AvailableBalance);
+                 response:='12';
+                "response message":='You have an outstanding Savers 2020 Loan, Clear it to enjoy the service';
+                EXIT;
+                END
+             END;
+            END;
+
+           ELoan.Savers2020(Account."No.",amount,phone_no);
+           CalcAvailableBalance(Account."No.");
+              balance:=FORMAT(AvailableBalance);
+              status:='1';
+              response:='00';
+              "response message":='success';
+        END;
+
+
+      //Request savers  loan 2020 eligibility
+        IF transaction_type=71 THEN BEGIN
+        SPotcashMembers.RESET;
+        SPotcashMembers.SETRANGE("Phone No",phone_no);
+        IF SPotcashMembers.FIND('-') THEN BEGIN
+
+          Account.GET(SPotcashMembers."Account No");
+          Member.GET(Account."Owner Member No");
+          SCaccounts.RESET;
+          SCaccounts.SETRANGE("Owner Member No",Account."Owner Member No");
+          SCaccounts.SETFILTER("Account Type",'%1','BS102');
+          IF SCaccounts.FINDSET THEN BEGIN
+          REPEAT
+          SCaccounts.CALCFIELDS("Balance (LCY)");
+          balanc:=balanc+SCaccounts."Balance (LCY)";
+          GeneralSetup.GET();
+          balanc:=(GeneralSetup."Savers Loan 2020 %"/100)*ABS(balanc);
+          UNTIL SCaccounts.NEXT=0;
+          END;
+
+          GenJournalLine.RESET;
+          GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+          GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",'SpotCash');
+          GenJournalLine.DELETEALL;
+
+          IF DefaultBatch.GET('PURCHASES','SpotCash') THEN
+          DefaultBatch.DELETE;
+
+          //POSTING MAIN TRANSACTION
+
+          DefaultBatch.INIT;
+          DefaultBatch."Journal Template Name":='PURCHASES';
+          DefaultBatch.Name:='SpotCash';
+          DefaultBatch.INSERT;
+
+              GenJournalLine2.INIT;
+              GenJournalLine2."Journal Template Name":='PURCHASES';
+              GenJournalLine2."Journal Batch Name":='SpotCash';
+              GenJournalLine2."Document No.":=request_id;
+              GenJournalLine5.RESET;
+              GenJournalLine5.SETRANGE("Journal Template Name",'PURCHASES');
+              GenJournalLine5.SETRANGE("Journal Batch Name",'SpotCash');
+              IF GenJournalLine5.FIND('+') THEN BEGIN
+              GenJournalLine2."Line No.":=GenJournalLine5."Line No."+10000;
+              END;
+              //GenJournalLine."Line No.":=LineNo;
+
+              GenJournalLine2."Posting Date":=TODAY;
+              GenJournalLine2.Description:=FORMAT(phone_no)+'-SpotCash Enquiry Charges';
+
+              GenJournalLine2."Account Type":=GenJournalLine2."Account Type"::Vendor;
+              GenJournalLine2."Account No.":=Account."No.";
+              AccountHolders.RESET;
+              AccountHolders.SETRANGE(AccountHolders."No.",Account."No.");
+              IF AccountHolders.FIND('-') THEN BEGIN
+              GenJournalLine2."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+              GenJournalLine2.VALIDATE(GenJournalLine2."Shortcut Dimension 1 Code");
+              GenJournalLine2."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+              GenJournalLine2.VALIDATE(GenJournalLine2."Shortcut Dimension 2 Code");
+              END;
+              TransactionTypes.RESET;
+              TransactionTypes.SETRANGE(Type,TransactionTypes.Type::SpotcashBalanceEnquiery);
+              IF TransactionTypes.FIND('-') THEN BEGIN
+                TransactionCharges.RESET;
+                TransactionCharges.SETRANGE("Transaction Type",TransactionTypes.Code);
+                IF TransactionCharges.FIND('-') THEN BEGIN
+                 // GenJournalLine2."Account No.":=TransactionCharges."GL Account";
+                  GenJournalLine2.Amount:=(TransactionCharges."Charge Amount"+(TransactionCharges."Excise %"/100)*TransactionCharges."Charge Amount");
+                  GenJournalLine2.Amount:=GenJournalLine2.Amount;
+                END;
+                GenJournalLine2.VALIDATE(GenJournalLine2.Amount);
+              END;
+            //END;
+
+              GenJournalLine2.VALIDATE(GenJournalLine2.Amount);
+             // GenJournalLine2."Bal. Account Type":=GenJournalLine2."Bal. Account Type"::"G/L Account";
+              //GenJournalLine2."Bal. Account No.":=scharges."GL Account";
+              GenJournalLine2.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+              IF GenJournalLine2.Amount<>0 THEN
+                GenJournalLine2.INSERT;
+              END;
+
+            //post sacco charge
+            GenJournalLine.RESET;
+            GenJournalLine.INIT;
+            GenJournalLine."Journal Template Name":='PURCHASES';
+            GenJournalLine."Journal Batch Name":='SpotCash';
+            GenJournalLine."Document No.":=request_id;
+            GenJournalLine5.RESET;
+            GenJournalLine5.SETRANGE("Journal Template Name",'PURCHASES');
+            GenJournalLine5.SETRANGE("Journal Batch Name",'SpotCash');
+            IF GenJournalLine5.FIND('+') THEN BEGIN
+            GenJournalLine."Line No.":=GenJournalLine5."Line No."+10000;
+            END;
+            //GenJournalLine."Line No.":=LineNo;
+            GenJournalLine."Posting Date":=TODAY;
+            GenJournalLine.Description:=FORMAT(phone_no)+'-SpotCash Enquiry Charges';
+            GenJournalLine."Account Type":=GenJournalLine."Account Type"::"G/L Account";
+            AccountHolders.RESET;
+            AccountHolders.SETRANGE(AccountHolders."No.",Account."No.");
+            IF AccountHolders.FIND('-') THEN BEGIN
+            GenJournalLine."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+            GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 1 Code");
+            GenJournalLine."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+            GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 2 Code");
+            END;
+            TransactionTypes.RESET;
+            TransactionTypes.SETRANGE(Type,TransactionTypes.Type::SpotcashBalanceEnquiery);
+            IF TransactionTypes.FIND('-') THEN BEGIN
+              TransactionCharges.RESET;
+              TransactionCharges.SETRANGE("Transaction Type",TransactionTypes.Code);
+              IF TransactionCharges.FIND('-') THEN BEGIN
+
+                GenJournalLine."Account No.":=TransactionCharges."GL Account";
+                GenJournalLine.Amount:=-TransactionCharges."Charge Amount";
+                GenJournalLine.VALIDATE(GenJournalLine.Amount);
+              END;
+            END;
+            GenJournalLine.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+            IF GenJournalLine.Amount<>0 THEN
+            GenJournalLine.INSERT;
+
+
+
+            //post execize duty
+
+
+                GenJournalLine1.RESET;
+                GenJournalLine1.INIT;
+                GenJournalLine1."Journal Template Name":='PURCHASES';
+                GenJournalLine1."Journal Batch Name":='SpotCash';
+                GenJournalLine1."Document No.":=request_id;
+                GenJournalLine5.RESET;
+                GenJournalLine5.SETRANGE("Journal Template Name",'PURCHASES');
+                GenJournalLine5.SETRANGE("Journal Batch Name",'SpotCash');
+                IF GenJournalLine5.FIND('+') THEN BEGIN
+                GenJournalLine1."Line No.":=GenJournalLine5."Line No."+10000;
+                END;
+                //GenJournalLine."Line No.":=LineNo;
+                GenJournalLine1."Posting Date":=TODAY;
+                GenJournalLine1.Description:=FORMAT(phone_no)+'-SpotCash Enquiry Charges';
+                GenJournalLine1."Account Type":=GenJournalLine1."Account Type"::"G/L Account";
+                AccountHolders.RESET;
+                AccountHolders.SETRANGE(AccountHolders."No.",Account."No.");
+                IF AccountHolders.FIND('-') THEN BEGIN
+                GenJournalLine1."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+                GenJournalLine1.VALIDATE(GenJournalLine1."Shortcut Dimension 1 Code");
+                GenJournalLine1."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+                GenJournalLine1.VALIDATE(GenJournalLine1."Shortcut Dimension 2 Code");
+                END;
+                TransactionTypes.RESET;
+                TransactionTypes.SETRANGE(Type,TransactionTypes.Type::SpotcashBalanceEnquiery);
+                IF TransactionTypes.FIND('-') THEN BEGIN
+                TransactionCharges.RESET;
+                TransactionCharges.SETRANGE("Transaction Type",TransactionTypes.Code);
+                IF TransactionCharges.FIND('-') THEN BEGIN
+
+                  GenJournalLine1."Account No.":=TransactionCharges."Excise G/L Account";
+                  GenJournalLine1.Amount:=(TransactionCharges."Excise %"/100)*TransactionCharges."Charge Amount";
+                  GenJournalLine1.Amount:=-GenJournalLine1.Amount;
+                  GenJournalLine1.VALIDATE(GenJournalLine1.Amount);
+                END;
+                END;
+                GenJournalLine1.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+                IF GenJournalLine1.Amount<>0 THEN
+                GenJournalLine1.INSERT;
+
+              //POST TRANSACTIONS
+              GenJournalLine.RESET;
+              GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+              GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",'SpotCash');
+              CODEUNIT.RUN(CODEUNIT::"Gen. Jnl.-Post",GenJournalLine);
+              //CalcAvailableBalance(Account."No.");
+              balance:=FORMAT(balanc);
+             response:='00';
+             "response message":='success';
+         END;
+
+
+
+
+
+      // Request E-Loan Balance
+      IF transaction_type=17 THEN BEGIN
+        SPotcashMembers.RESET;
+        SPotcashMembers.SETRANGE("Phone No",phone_no);
+        IF SPotcashMembers.FIND('-') THEN BEGIN
+        LoanProductTypes.RESET;
+        LoanProductTypes.SETRANGE("E-Loan",TRUE);
+        IF LoanProductTypes.FIND('-') THEN BEGIN
+          Account.GET(SPotcashMembers."Account No");
+          Member.GET(Account."Owner Member No");
+          SCaccounts.RESET;
+          SCaccounts.SETRANGE("Owner Member No",Account."Owner Member No");
+          SCaccounts.SETRANGE("Vendor Posting Group",LoanProductTypes.Code);
+          IF SCaccounts.FIND('+') THEN BEGIN
+          SCaccounts.CALCFIELDS("Balance (LCY)");
+          balanc:=balanc+SCaccounts."Balance (LCY)";
+          END ELSE BEGIN
+            balanc:=0;
+            response:='22';
+            "response message":='E-Loan not Found';
+          END;
+         END;
+          GenJournalLine.RESET;
+          GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+          GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",'SpotCash');
+          GenJournalLine.DELETEALL;
+
+          IF DefaultBatch.GET('PURCHASES','SpotCash') THEN
+          DefaultBatch.DELETE;
+
+          //POSTING MAIN TRANSACTION
+
+          DefaultBatch.INIT;
+          DefaultBatch."Journal Template Name":='PURCHASES';
+          DefaultBatch.Name:='SpotCash';
+          DefaultBatch.INSERT;
+
+              GenJournalLine2.INIT;
+              GenJournalLine2."Journal Template Name":='PURCHASES';
+              GenJournalLine2."Journal Batch Name":='SpotCash';
+              GenJournalLine2."Document No.":=request_id;
+              GenJournalLine5.RESET;
+              GenJournalLine5.SETRANGE("Journal Template Name",'PURCHASES');
+              GenJournalLine5.SETRANGE("Journal Batch Name",'SpotCash');
+              IF GenJournalLine5.FIND('+') THEN BEGIN
+              GenJournalLine2."Line No.":=GenJournalLine5."Line No."+10000;
+              END;
+              //GenJournalLine."Line No.":=LineNo;
+
+              GenJournalLine2."Posting Date":=TODAY;
+              GenJournalLine2.Description:=FORMAT(phone_no)+'-SpotCash Enquiry Charges';
+
+              GenJournalLine2."Account Type":=GenJournalLine2."Account Type"::Vendor;
+              GenJournalLine2."Account No.":=Account."No.";
+              AccountHolders.RESET;
+              AccountHolders.SETRANGE(AccountHolders."No.",Account."No.");
+              IF AccountHolders.FIND('-') THEN BEGIN
+              GenJournalLine2."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+              GenJournalLine2.VALIDATE(GenJournalLine2."Shortcut Dimension 1 Code");
+              GenJournalLine2."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+              GenJournalLine2.VALIDATE(GenJournalLine2."Shortcut Dimension 2 Code");
+              END;
+              TransactionTypes.RESET;
+              TransactionTypes.SETRANGE(Type,TransactionTypes.Type::SpotcashBalanceEnquiery);
+              IF TransactionTypes.FIND('-') THEN BEGIN
+                TransactionCharges.RESET;
+                TransactionCharges.SETRANGE("Transaction Type",TransactionTypes.Code);
+                IF TransactionCharges.FIND('-') THEN BEGIN
+                 // GenJournalLine2."Account No.":=TransactionCharges."GL Account";
+                  GenJournalLine2.Amount:=(TransactionCharges."Charge Amount"+TransactionCharges."Settlement Amount");
+                  GenJournalLine2.Amount:=GenJournalLine2.Amount;
+                END;
+                GenJournalLine2.VALIDATE(GenJournalLine2.Amount);
+              END;
+            //END;
+
+              GenJournalLine2.VALIDATE(GenJournalLine2.Amount);
+             // GenJournalLine2."Bal. Account Type":=GenJournalLine2."Bal. Account Type"::"G/L Account";
+              //GenJournalLine2."Bal. Account No.":=scharges."GL Account";
+              GenJournalLine2.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+              IF GenJournalLine2.Amount<>0 THEN
+                GenJournalLine2.INSERT;
+              END;
+
+            //post sacco charge
+            GenJournalLine.RESET;
+            GenJournalLine.INIT;
+            GenJournalLine."Journal Template Name":='PURCHASES';
+            GenJournalLine."Journal Batch Name":='SpotCash';
+            GenJournalLine."Document No.":=request_id;
+            GenJournalLine5.RESET;
+            GenJournalLine5.SETRANGE("Journal Template Name",'PURCHASES');
+            GenJournalLine5.SETRANGE("Journal Batch Name",'SpotCash');
+            IF GenJournalLine5.FIND('+') THEN BEGIN
+            GenJournalLine."Line No.":=GenJournalLine5."Line No."+10000;
+            END;
+            //GenJournalLine."Line No.":=LineNo;
+            GenJournalLine."Posting Date":=TODAY;
+            GenJournalLine.Description:=FORMAT(phone_no)+'-SpotCash Enquiry Charges';
+            GenJournalLine."Account Type":=GenJournalLine."Account Type"::"G/L Account";
+            AccountHolders.RESET;
+            AccountHolders.SETRANGE(AccountHolders."No.",Account."No.");
+            IF AccountHolders.FIND('-') THEN BEGIN
+            GenJournalLine."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+            GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 1 Code");
+            GenJournalLine."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+            GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 2 Code");
+            END;
+            TransactionTypes.RESET;
+            TransactionTypes.SETRANGE(Type,TransactionTypes.Type::SpotcashBalanceEnquiery);
+            IF TransactionTypes.FIND('-') THEN BEGIN
+              TransactionCharges.RESET;
+              TransactionCharges.SETRANGE("Transaction Type",TransactionTypes.Code);
+              IF TransactionCharges.FIND('-') THEN BEGIN
+                GenJournalLine."Account No.":=TransactionCharges."GL Account";
+                GenJournalLine.Amount:=-TransactionCharges."Charge Amount";
+                GenJournalLine.VALIDATE(GenJournalLine.Amount);
+              END;
+            END;
+            GenJournalLine.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+            IF GenJournalLine.Amount<>0 THEN
+            GenJournalLine.INSERT;
+            //post settlement charge
+                GenJournalLine1.RESET;
+                GenJournalLine1.INIT;
+                GenJournalLine1."Journal Template Name":='PURCHASES';
+                GenJournalLine1."Journal Batch Name":='SpotCash';
+                GenJournalLine1."Document No.":=request_id;
+                GenJournalLine5.RESET;
+                GenJournalLine5.SETRANGE("Journal Template Name",'PURCHASES');
+                GenJournalLine5.SETRANGE("Journal Batch Name",'SpotCash');
+                IF GenJournalLine5.FIND('+') THEN BEGIN
+                GenJournalLine1."Line No.":=GenJournalLine5."Line No."+10000;
+                END;
+                //GenJournalLine."Line No.":=LineNo;
+                GenJournalLine1."Posting Date":=TODAY;
+                GenJournalLine1.Description:=FORMAT(phone_no)+'-SpotCash Enquiry Charges';
+                GenJournalLine1."Account Type":=GenJournalLine1."Account Type"::"G/L Account";
+                AccountHolders.RESET;
+                AccountHolders.SETRANGE(AccountHolders."No.",Account."No.");
+                IF AccountHolders.FIND('-') THEN BEGIN
+                GenJournalLine1."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+                GenJournalLine1.VALIDATE(GenJournalLine1."Shortcut Dimension 1 Code");
+                GenJournalLine1."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+                GenJournalLine1.VALIDATE(GenJournalLine1."Shortcut Dimension 2 Code");
+                END;
+                TransactionTypes.RESET;
+                TransactionTypes.SETRANGE(Type,TransactionTypes.Type::SpotcashBalanceEnquiery);
+                IF TransactionTypes.FIND('-') THEN BEGIN
+                TransactionCharges.RESET;
+                TransactionCharges.SETRANGE("Transaction Type",TransactionTypes.Code);
+                IF TransactionCharges.FIND('-') THEN BEGIN
+
+                  GenJournalLine1."Account No.":=TransactionCharges."Settlement GL Account";
+                  GenJournalLine1.Amount:=-TransactionCharges."Settlement Amount";
+                  GenJournalLine1.VALIDATE(GenJournalLine1.Amount);
+                END;
+                END;
+                GenJournalLine1.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+                IF GenJournalLine1.Amount<>0 THEN
+                GenJournalLine1.INSERT;
+
+              //POST TRANSACTIONS
+              GenJournalLine.RESET;
+              GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+              GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",'SpotCash');
+              CODEUNIT.RUN(CODEUNIT::"Gen. Jnl.-Post",GenJournalLine);
+              //CalcAvailableBalance(Account."No.");
+              balanc:=balanc*-1;
+              balance:=FORMAT(balanc);
+             response:='00';
+             "response message":='success';
+         END;
+
+      // E-Loan Repayment
+      IF transaction_type=18 THEN BEGIN
+        SPotcashMembers.RESET;
+        SPotcashMembers.SETRANGE("Phone No",phone_no);
+        IF SPotcashMembers.FIND('-') THEN BEGIN
+        LoanProductTypes.RESET;
+        LoanProductTypes.SETRANGE("E-Loan",TRUE);
+        IF LoanProductTypes.FIND('-') THEN BEGIN
+          Account.GET(SPotcashMembers."Account No");
+          Member.GET(Account."Owner Member No");
+          SCaccounts.RESET;
+          SCaccounts.SETRANGE("Owner Member No",Account."Owner Member No");
+          SCaccounts.CALCFIELDS("Balance (LCY)");
+          SCaccounts.SETFILTER("Balance (LCY)",'<>%1',0);
+          SCaccounts.SETRANGE("Vendor Posting Group",LoanProductTypes.Code);
+          IF SCaccounts.FIND('+') THEN BEGIN
+          EVALUATE(Amt,amount);
+          RemainingAmount:=Amt;
+
+          GenJournalLine.RESET;
+          GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+          GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",'SpotCash');
+          IF GenJournalLine.FIND('-') THEN
+          GenJournalLine.DELETEALL;
+
+          IF DefaultBatch.GET('PURCHASES','SpotCash') THEN
+          DefaultBatch.DELETE;
+
+          //POSTING MAIN TRANSACTION
+
+          DefaultBatch.INIT;
+          DefaultBatch."Journal Template Name":='PURCHASES';
+          DefaultBatch.Name:='SpotCash';
+          DefaultBatch.INSERT;
+        LoanApplications.GET(SCaccounts."No.");
+        LoanApplications.CALCFIELDS(LoanApplications."Oustanding Balance");
+        Account.GET(LoanApplications."Loan  No.");
+        Account.CALCFIELDS("Balance (LCY)");
+
+        IF LoanApplications."Oustanding Balance" > 0 THEN BEGIN
+        {
+          Gnljnline.INIT;
+          Gnljnline."Journal Template Name":='PURCHASES';
+          Gnljnline."Journal Batch Name":='SpotCash';
+
+          Gnljnline5.RESET;
+          Gnljnline5.SETRANGE("Journal Template Name",'PURCHASES');
+          Gnljnline5.SETRANGE("Journal Batch Name",'SpotCash');
+          IF Gnljnline5.FIND('+') THEN BEGIN
+           Gnljnline."Line No.":=Gnljnline5."Line No."+1000;
+          END;
+
+          Gnljnline."Account Type":=Gnljnline."Account Type"::"G/L Account";
+          Gnljnline."Account No.":=LoanProductTypes."Loan Interest Account";
+          Gnljnline."Transaction Type":=Gnljnline."Transaction Type"::"Interest Paid";
+          Gnljnline.VALIDATE(Gnljnline."Account No.");
+          Gnljnline."Document No.":=request_id;
+          Gnljnline."Posting Date":=TODAY;
+          Gnljnline."Shortcut Dimension 1 Code":=LoanApplications."Global Dimension 1 Code";
+          Gnljnline.Description:='Interest Paid';
+          Gnljnline.VALIDATE(Gnljnline."Shortcut Dimension 1 Code");
+              VendorLedgerEntry.RESET;
+              VendorLedgerEntry.SETCURRENTKEY("Posting Date");
+              VendorLedgerEntry.SETRANGE("Vendor No.",LoanApplications."Loan  No.");
+              VendorLedgerEntry.SETRANGE("Transaction Type",VendorLedgerEntry."Transaction Type"::"Interest Due");
+              IF VendorLedgerEntry.FINDLAST THEN BEGIN
+                VendorLedgerEntry.CALCFIELDS(Amount);
+                Inte:=ABS(VendorLedgerEntry.Amount);
+                VendorLedgerEntry2.RESET;
+                VendorLedgerEntry2.SETCURRENTKEY("Posting Date");
+                VendorLedgerEntry2.SETRANGE("Vendor No.",LoanApplications."Loan  No.");
+                VendorLedgerEntry2.SETRANGE("Transaction Type",VendorLedgerEntry2."Transaction Type"::"Interest Paid");
+                IF VendorLedgerEntry2.FINDLAST THEN BEGIN
+                 VendorLedgerEntry2.CALCFIELDS(Amount);
+                 Inte:=Inte-ABS(VendorLedgerEntry2.Amount);
+                END;
+              END;
+
+          IF Inte<RemainingAmount THEN BEGIN
+          Gnljnline.Amount:=Inte;
+          END ELSE BEGIN
+          IF RemainingAmount>0 THEN BEGIN
+           Gnljnline.Amount:=RemainingAmount;
+          END ELSE BEGIN
+          Gnljnline.Amount:=0;
+          END;
+          END;
+          ActualInterest:=Gnljnline.Amount;
+          RemainingAmount:=RemainingAmount-Gnljnline.Amount;
+          Gnljnline.Amount:=-1*Gnljnline.Amount;
+          Gnljnline.VALIDATE(Gnljnline.Amount);
+          Gnljnline."Bal. Account Type":=Gnljnline."Bal. Account Type"::"G/L Account";
+          Gnljnline."Bal. Account No.":=LoanProductTypes."Receivable Interest Account";
+          Gnljnline.VALIDATE(Gnljnline."Bal. Account No.");
+          Gnljnline."Loan No":=LoanApplications."Loan  No.";
+          Gnljnline.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+
+          IF Gnljnline.Amount<>0 THEN
+          Gnljnline.INSERT;
+          }
+
+      //recover interest
+          Gnljnline.INIT;
+          Gnljnline."Journal Template Name":='PURCHASES';
+          Gnljnline."Journal Batch Name":='SpotCash';
+          Gnljnline5.RESET;
+          Gnljnline5.SETRANGE("Journal Template Name",'PURCHASES');
+          Gnljnline5.SETRANGE("Journal Batch Name",'SpotCash');
+          IF Gnljnline5.FIND('+') THEN BEGIN
+           Gnljnline."Line No.":=Gnljnline5."Line No."+1000;
+          END;
+          Gnljnline."Account Type":=Gnljnline."Account Type"::Vendor;
+          Gnljnline."Account No.":=LoanApplications."Loan  No.";
+          Gnljnline."Transaction Type":=Gnljnline."Transaction Type"::"Interest Paid";
+          Gnljnline.VALIDATE(Gnljnline."Account No.");
+          Gnljnline."Document No.":=request_id;
+          Gnljnline."Posting Date":=TODAY;
+          Gnljnline."Shortcut Dimension 1 Code":=LoanApplications."Global Dimension 1 Code";
+          Gnljnline.VALIDATE(Gnljnline."Shortcut Dimension 1 Code");
+          Gnljnline.Description:='Interest Paid';
+          Gnljnline.Amount:=-1*ActualInterest;
+          Gnljnline.VALIDATE(Gnljnline.Amount);
+          Gnljnline."Loan No":=LoanApplications."Loan  No.";
+          Gnljnline."Bal. Account Type":=Gnljnline."Bal. Account Type"::"G/L Account";
+          GeneralSetup.GET;
+          Gnljnline."Bal. Account No.":=GeneralSetup."SpotCash Control Account";
+          Gnljnline.VALIDATE(Gnljnline."Bal. Account No.");
+          Gnljnline.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+          IF Gnljnline.Amount<>0 THEN
+          Gnljnline.INSERT;
+
+
+      //recover Principal
+          Gnljnline2.INIT;
+          Gnljnline2."Journal Template Name":='PURCHASES';
+          Gnljnline2."Journal Batch Name":='SpotCash';
+          Gnljnline5.RESET;
+          Gnljnline5.SETRANGE("Journal Template Name",'PURCHASES');
+          Gnljnline5.SETRANGE("Journal Batch Name",'SpotCash');
+          IF Gnljnline5.FIND('+') THEN BEGIN
+           Gnljnline2."Line No.":=Gnljnline5."Line No."+1000;
+          END;
+          Gnljnline2."Account Type":=Gnljnline2."Account Type"::Vendor;
+          Gnljnline2."Account No.":=LoanApplications."Loan  No.";
+          Gnljnline2."Transaction Type":=Gnljnline2."Transaction Type"::Repayment;
+          Gnljnline2.VALIDATE(Gnljnline2."Account No.");
+          Gnljnline2."Document No.":=request_id;
+          Gnljnline2."Posting Date":=TODAY;
+          Gnljnline2."Shortcut Dimension 1 Code":=LoanApplications."Global Dimension 1 Code";
+          Gnljnline2.VALIDATE(Gnljnline2."Shortcut Dimension 1 Code");
+          Gnljnline2.Description:='Principal Paid';
+          Principal:=LoanApplications."Approved Amount"/LoanApplications.Installments;
+
+          IF Principal<RemainingAmount THEN BEGIN
+          Gnljnline2.Amount:=Principal;
+          END ELSE BEGIN
+          IF RemainingAmount>0 THEN BEGIN
+           Gnljnline2.Amount:=RemainingAmount;
+          END ELSE BEGIN
+          Gnljnline2.Amount:=0;
+          END;
+          END;
+          //ActualPrincipal:=Gnljnline2.Amount;
+          RemainingAmount:=RemainingAmount-Gnljnline2.Amount;
+
+          Gnljnline2.Amount:=-1*Gnljnline2.Amount;
+          Gnljnline2.VALIDATE(Gnljnline2.Amount);
+          Gnljnline2."Loan No":=LoanApplications."Loan  No.";
+          Gnljnline2."Bal. Account Type":=Gnljnline2."Bal. Account Type"::"G/L Account";
+          GeneralSetup.GET;
+          Gnljnline2."Bal. Account No.":=GeneralSetup."SpotCash Control Account";
+          Gnljnline2.VALIDATE(Gnljnline2."Bal. Account No.");
+          Gnljnline2.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+          IF Gnljnline2.Amount<>0 THEN
+          Gnljnline2.INSERT;
+
+          //POST TRANSACTIONS
+            GenJournalLine.RESET;
+            GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+            GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",'SpotCash');
+            IF GenJournalLine.FIND('-') THEN BEGIN
+             CODEUNIT.RUN(CODEUNIT::"Gen. Jnl.-Post",GenJournalLine);
+             balanc:=balanc*-1;
+            balance:=FORMAT(balanc);
+            response:='00';
+            "response message":='success';
+            END;
+            //CalcAvailableBalance(Account."No.");
+             END ELSE BEGIN
+            balanc:=0;
+            response:='22';
+            "response message":='E-Loan not Found';
+           END;
+          END;
+         END;
+        END;
+       END;
+
+      //Request Loan Balance
+        IF transaction_type=10 THEN BEGIN
+        SPotcashMembers.RESET;
+        SPotcashMembers.SETRANGE("Phone No",phone_no);
+        IF SPotcashMembers.FIND('-') THEN BEGIN
+
+          Account.GET(SPotcashMembers."Account No");
+          Member.GET(Account."Owner Member No");
+          SCaccounts.RESET;
+          SCaccounts.SETRANGE("Owner Member No",Account."Owner Member No");
+          SCaccounts.SETRANGE("Account Type",'LOAN');
+          IF SCaccounts.FINDSET THEN BEGIN
+          REPEAT
+          SCaccounts.CALCFIELDS("Balance (LCY)");
+          IF SCaccounts."Balance (LCY)"<>0 THEN BEGIN
+          balanc:=SCaccounts."Balance (LCY)";
+          balance:=balance+','+SCaccounts.Name+'-'+FORMAT(-1*balanc);
+          END;
+          UNTIL SCaccounts.NEXT=0;
+          END;
+
+          GenJournalLine.RESET;
+          GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+          GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",'SpotCash');
+          GenJournalLine.DELETEALL;
+
+          IF DefaultBatch.GET('PURCHASES','SpotCash') THEN
+          DefaultBatch.DELETE;
+
+          //POSTING MAIN TRANSACTION
+
+          DefaultBatch.INIT;
+          DefaultBatch."Journal Template Name":='PURCHASES';
+          DefaultBatch.Name:='SpotCash';
+          DefaultBatch.INSERT;
+
+              GenJournalLine2.INIT;
+              GenJournalLine2."Journal Template Name":='PURCHASES';
+              GenJournalLine2."Journal Batch Name":='SpotCash';
+              GenJournalLine2."Document No.":=request_id;
+              GenJournalLine5.RESET;
+              GenJournalLine5.SETRANGE("Journal Template Name",'PURCHASES');
+              GenJournalLine5.SETRANGE("Journal Batch Name",'SpotCash');
+              IF GenJournalLine5.FIND('+') THEN BEGIN
+              GenJournalLine2."Line No.":=GenJournalLine5."Line No."+10000;
+              END;
+              //GenJournalLine."Line No.":=LineNo;
+
+              GenJournalLine2."Posting Date":=TODAY;
+              GenJournalLine2.Description:=FORMAT(phone_no)+'-SpotCash Enquiry Charges';
+
+              GenJournalLine2."Account Type":=GenJournalLine2."Account Type"::Vendor;
+              GenJournalLine2."Account No.":=Account."No.";
+              AccountHolders.RESET;
+              AccountHolders.SETRANGE(AccountHolders."No.",Account."No.");
+              IF AccountHolders.FIND('-') THEN BEGIN
+              GenJournalLine2."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+              GenJournalLine2.VALIDATE(GenJournalLine2."Shortcut Dimension 1 Code");
+              GenJournalLine2."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+              GenJournalLine2.VALIDATE(GenJournalLine2."Shortcut Dimension 2 Code");
+              END;
+              TransactionTypes.RESET;
+              TransactionTypes.SETRANGE(Type,TransactionTypes.Type::eloan);
+              IF TransactionTypes.FIND('-') THEN BEGIN
+                TransactionCharges.RESET;
+                TransactionCharges.SETRANGE("Transaction Type",TransactionTypes.Code);
+                IF TransactionCharges.FIND('-') THEN BEGIN
+                 // GenJournalLine2."Account No.":=TransactionCharges."GL Account";
+                  GenJournalLine2.Amount:=(TransactionCharges."Charge Amount"+(TransactionCharges."Excise %"/100)*TransactionCharges."Charge Amount");
+                  GenJournalLine2.Amount:=GenJournalLine2.Amount;
+                END;
+                GenJournalLine2.VALIDATE(GenJournalLine2.Amount);
+              END;
+            //END;
+
+              GenJournalLine2.VALIDATE(GenJournalLine2.Amount);
+             // GenJournalLine2."Bal. Account Type":=GenJournalLine2."Bal. Account Type"::"G/L Account";
+              //GenJournalLine2."Bal. Account No.":=scharges."GL Account";
+              GenJournalLine2.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+              IF GenJournalLine2.Amount<>0 THEN
+                GenJournalLine2.INSERT;
+              END;
+
+            //post sacco charge
+            GenJournalLine.RESET;
+            GenJournalLine.INIT;
+            GenJournalLine."Journal Template Name":='PURCHASES';
+            GenJournalLine."Journal Batch Name":='SpotCash';
+            GenJournalLine."Document No.":=request_id;
+            GenJournalLine5.RESET;
+            GenJournalLine5.SETRANGE("Journal Template Name",'PURCHASES');
+            GenJournalLine5.SETRANGE("Journal Batch Name",'SpotCash');
+            IF GenJournalLine5.FIND('+') THEN BEGIN
+            GenJournalLine."Line No.":=GenJournalLine5."Line No."+10000;
+            END;
+            //GenJournalLine."Line No.":=LineNo;
+            GenJournalLine."Posting Date":=TODAY;
+            GenJournalLine.Description:=FORMAT(phone_no)+'-SpotCash Enquiry Charges';
+            GenJournalLine."Account Type":=GenJournalLine."Account Type"::"G/L Account";
+            AccountHolders.RESET;
+            AccountHolders.SETRANGE(AccountHolders."No.",Account."No.");
+            IF AccountHolders.FIND('-') THEN BEGIN
+            GenJournalLine."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+            GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 1 Code");
+            GenJournalLine."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+            GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 2 Code");
+            END;
+            TransactionTypes.RESET;
+            TransactionTypes.SETRANGE(Type,TransactionTypes.Type::eloan);
+            IF TransactionTypes.FIND('-') THEN BEGIN
+              TransactionCharges.RESET;
+              TransactionCharges.SETRANGE("Transaction Type",TransactionTypes.Code);
+              IF TransactionCharges.FIND('-') THEN BEGIN
+
+                GenJournalLine."Account No.":=TransactionCharges."GL Account";
+                GenJournalLine.Amount:=-TransactionCharges."Charge Amount";
+                GenJournalLine.VALIDATE(GenJournalLine.Amount);
+              END;
+            END;
+            GenJournalLine.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+            IF GenJournalLine.Amount<>0 THEN
+            GenJournalLine.INSERT;
+
+
+
+            //post settlement charge
+
+
+                GenJournalLine1.RESET;
+                GenJournalLine1.INIT;
+                GenJournalLine1."Journal Template Name":='PURCHASES';
+                GenJournalLine1."Journal Batch Name":='SpotCash';
+                GenJournalLine1."Document No.":=request_id;
+                GenJournalLine5.RESET;
+                GenJournalLine5.SETRANGE("Journal Template Name",'PURCHASES');
+                GenJournalLine5.SETRANGE("Journal Batch Name",'SpotCash');
+                IF GenJournalLine5.FIND('+') THEN BEGIN
+                GenJournalLine1."Line No.":=GenJournalLine5."Line No."+10000;
+                END;
+                //GenJournalLine."Line No.":=LineNo;
+                GenJournalLine1."Posting Date":=TODAY;
+                GenJournalLine1.Description:=FORMAT(phone_no)+'-SpotCash Enquiry Charges';
+                GenJournalLine1."Account Type":=GenJournalLine1."Account Type"::"G/L Account";
+                AccountHolders.RESET;
+                AccountHolders.SETRANGE(AccountHolders."No.",Account."No.");
+                IF AccountHolders.FIND('-') THEN BEGIN
+                GenJournalLine1."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+                GenJournalLine1.VALIDATE(GenJournalLine1."Shortcut Dimension 1 Code");
+                GenJournalLine1."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+                GenJournalLine1.VALIDATE(GenJournalLine1."Shortcut Dimension 2 Code");
+                END;
+                TransactionTypes.RESET;
+                TransactionTypes.SETRANGE(Type,TransactionTypes.Type::eloan);
+                IF TransactionTypes.FIND('-') THEN BEGIN
+                TransactionCharges.RESET;
+                TransactionCharges.SETRANGE("Transaction Type",TransactionTypes.Code);
+                IF TransactionCharges.FIND('-') THEN BEGIN
+
+                  GenJournalLine1."Account No.":=TransactionCharges."Excise G/L Account";
+                  GenJournalLine1.Amount:=(TransactionCharges."Excise %"/100)*TransactionCharges."Charge Amount";
+                  GenJournalLine1.Amount:=-GenJournalLine1.Amount;
+                  GenJournalLine1.VALIDATE(GenJournalLine1.Amount);
+                END;
+                END;
+                GenJournalLine1.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+                IF GenJournalLine1.Amount<>0 THEN
+                GenJournalLine1.INSERT;
+
+              //POST TRANSACTIONS
+              GenJournalLine.RESET;
+              GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+              GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",'SpotCash');
+              CODEUNIT.RUN(CODEUNIT::"Gen. Jnl.-Post",GenJournalLine);
+              //CalcAvailableBalance(Account."No.");
+              balanc:=balanc*-1;
+             // balance:=FORMAT(balanc);
+             balance:=balance;
+             response:='00';
+             "response message":='success';
+         END;
+
+      //Request Loan Status
+        IF transaction_type=11 THEN BEGIN
+        SPotcashMembers.RESET;
+        SPotcashMembers.SETRANGE("Phone No",phone_no);
+        IF SPotcashMembers.FIND('-') THEN BEGIN
+
+          Account.GET(SPotcashMembers."Account No");
+          Member.GET(Account."Owner Member No");
+          SCaccounts.RESET;
+          SCaccounts.SETRANGE("Owner Member No",Account."Owner Member No");
+          SCaccounts.SETRANGE("Account Type",'LOAN');
+          IF SCaccounts.FINDSET THEN BEGIN
+          REPEAT
+          SCaccounts.CALCFIELDS("Balance (LCY)");
+          balanc:=balanc+SCaccounts."Balance (LCY)";
+          message:=FORMAT(SCaccounts.Status);
+          UNTIL SCaccounts.NEXT=0;
+          END;
+          GenJournalLine.RESET;
+          GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+          GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",'SpotCash');
+          GenJournalLine.DELETEALL;
+
+          IF DefaultBatch.GET('PURCHASES','SpotCash') THEN
+          DefaultBatch.DELETE;
+
+          //POSTING MAIN TRANSACTION
+
+          DefaultBatch.INIT;
+          DefaultBatch."Journal Template Name":='PURCHASES';
+          DefaultBatch.Name:='SpotCash';
+          DefaultBatch.INSERT;
+
+              GenJournalLine2.INIT;
+              GenJournalLine2."Journal Template Name":='PURCHASES';
+              GenJournalLine2."Journal Batch Name":='SpotCash';
+              GenJournalLine2."Document No.":=request_id;
+              GenJournalLine5.RESET;
+              GenJournalLine5.SETRANGE("Journal Template Name",'PURCHASES');
+              GenJournalLine5.SETRANGE("Journal Batch Name",'SpotCash');
+              IF GenJournalLine5.FIND('+') THEN BEGIN
+              GenJournalLine2."Line No.":=GenJournalLine5."Line No."+10000;
+              END;
+              //GenJournalLine."Line No.":=LineNo;
+
+              GenJournalLine2."Posting Date":=TODAY;
+              GenJournalLine2.Description:=FORMAT(phone_no)+'-SpotCash Enquiry Charges';
+
+              GenJournalLine2."Account Type":=GenJournalLine2."Account Type"::Vendor;
+              GenJournalLine2."Account No.":=Account."No.";
+              AccountHolders.RESET;
+                AccountHolders.SETRANGE(AccountHolders."No.",Account."No.");
+                IF AccountHolders.FIND('-') THEN BEGIN
+                GenJournalLine2."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+                GenJournalLine2.VALIDATE(GenJournalLine2."Shortcut Dimension 1 Code");
+                GenJournalLine2."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+                GenJournalLine2.VALIDATE(GenJournalLine2."Shortcut Dimension 2 Code");
+                END;
+              TransactionTypes.RESET;
+              TransactionTypes.SETRANGE(Type,TransactionTypes.Type::SpotcashBalanceEnquiery);
+              IF TransactionTypes.FIND('-') THEN BEGIN
+                TransactionCharges.RESET;
+                TransactionCharges.SETRANGE("Transaction Type",TransactionTypes.Code);
+                IF TransactionCharges.FIND('-') THEN BEGIN
+                 // GenJournalLine2."Account No.":=TransactionCharges."GL Account";
+                  GenJournalLine2.Amount:=(TransactionCharges."Charge Amount"+TransactionCharges."Settlement Amount"+(TransactionCharges."Excise %"/100)*TransactionCharges."Charge Amount");
+                  GenJournalLine2.Amount:=GenJournalLine2.Amount;
+                END;
+                GenJournalLine2.VALIDATE(GenJournalLine2.Amount);
+              END;
+            //END;
+
+              GenJournalLine2.VALIDATE(GenJournalLine2.Amount);
+             // GenJournalLine2."Bal. Account Type":=GenJournalLine2."Bal. Account Type"::"G/L Account";
+              //GenJournalLine2."Bal. Account No.":=scharges."GL Account";
+              GenJournalLine2.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+              IF GenJournalLine2.Amount<>0 THEN
+                GenJournalLine2.INSERT;
+              END;
+
+            //post sacco charge
+            GenJournalLine.RESET;
+            GenJournalLine.INIT;
+            GenJournalLine."Journal Template Name":='PURCHASES';
+            GenJournalLine."Journal Batch Name":='SpotCash';
+            GenJournalLine."Document No.":=request_id;
+            GenJournalLine5.RESET;
+            GenJournalLine5.SETRANGE("Journal Template Name",'PURCHASES');
+            GenJournalLine5.SETRANGE("Journal Batch Name",'SpotCash');
+            IF GenJournalLine5.FIND('+') THEN BEGIN
+            GenJournalLine."Line No.":=GenJournalLine5."Line No."+10000;
+            END;
+            //GenJournalLine."Line No.":=LineNo;
+            GenJournalLine."Posting Date":=TODAY;
+            GenJournalLine.Description:=FORMAT(phone_no)+'-SpotCash Enquiry Charges';
+            GenJournalLine."Account Type":=GenJournalLine."Account Type"::"G/L Account";
+                AccountHolders.RESET;
+                AccountHolders.SETRANGE(AccountHolders."No.",Account."No.");
+                IF AccountHolders.FIND('-') THEN BEGIN
+                GenJournalLine."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+                GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 1 Code");
+                GenJournalLine."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+                GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 2 Code");
+                END;
+            TransactionTypes.RESET;
+            TransactionTypes.SETRANGE(Type,TransactionTypes.Type::SpotcashBalanceEnquiery);
+            IF TransactionTypes.FIND('-') THEN BEGIN
+              TransactionCharges.RESET;
+              TransactionCharges.SETRANGE("Transaction Type",TransactionTypes.Code);
+              IF TransactionCharges.FIND('-') THEN BEGIN
+
+                GenJournalLine."Account No.":=TransactionCharges."GL Account";
+                GenJournalLine.Amount:=-TransactionCharges."Charge Amount";
+                GenJournalLine.VALIDATE(GenJournalLine.Amount);
+              END;
+            END;
+            GenJournalLine.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+            IF GenJournalLine.Amount<>0 THEN
+            GenJournalLine.INSERT;
+
+
+
+            //post execize duty charge
+
+
+                GenJournalLine1.RESET;
+                GenJournalLine1.INIT;
+                GenJournalLine1."Journal Template Name":='PURCHASES';
+                GenJournalLine1."Journal Batch Name":='SpotCash';
+                GenJournalLine1."Document No.":=request_id;
+                GenJournalLine5.RESET;
+                GenJournalLine5.SETRANGE("Journal Template Name",'PURCHASES');
+                GenJournalLine5.SETRANGE("Journal Batch Name",'SpotCash');
+                IF GenJournalLine5.FIND('+') THEN BEGIN
+                GenJournalLine1."Line No.":=GenJournalLine5."Line No."+10000;
+                END;
+                //GenJournalLine."Line No.":=LineNo;
+                GenJournalLine1."Posting Date":=TODAY;
+                GenJournalLine1.Description:=FORMAT(phone_no)+'-SpotCash Enquiry Charges';
+                GenJournalLine1."Account Type":=GenJournalLine1."Account Type"::"G/L Account";
+                AccountHolders.RESET;
+                AccountHolders.SETRANGE(AccountHolders."No.",Account."No.");
+                IF AccountHolders.FIND('-') THEN BEGIN
+                GenJournalLine1."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+                GenJournalLine1.VALIDATE(GenJournalLine1."Shortcut Dimension 1 Code");
+                GenJournalLine1."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+                GenJournalLine1.VALIDATE(GenJournalLine1."Shortcut Dimension 2 Code");
+                END;
+                TransactionTypes.RESET;
+                TransactionTypes.SETRANGE(Type,TransactionTypes.Type::SpotcashBalanceEnquiery);
+                IF TransactionTypes.FIND('-') THEN BEGIN
+                TransactionCharges.RESET;
+                TransactionCharges.SETRANGE("Transaction Type",TransactionTypes.Code);
+                IF TransactionCharges.FIND('-') THEN BEGIN
+
+                  GenJournalLine1."Account No.":=TransactionCharges."Excise G/L Account";
+                  GenJournalLine1.Amount:=(TransactionCharges."Excise %"/100)*TransactionCharges."Charge Amount";
+                  GenJournalLine1.Amount:=-1*GenJournalLine1.Amount;
+                  GenJournalLine1.VALIDATE(GenJournalLine1.Amount);
+                END;
+                END;
+                GenJournalLine1.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+                IF GenJournalLine1.Amount<>0 THEN
+                GenJournalLine1.INSERT;
+
+              //POST TRANSACTIONS
+              GenJournalLine.RESET;
+              GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+              GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",'SpotCash');
+              CODEUNIT.RUN(CODEUNIT::"Gen. Jnl.-Post",GenJournalLine);
+              CalcAvailableBalance(Account."No.");
+              balance:=FORMAT(AvailableBalance);
+             response:='00';
+             "response message":='success';
+
+         END;
+
+      {
+      //Request Loan Status
+      IF transaction_type=11 THEN BEGIN
+        Bal:=0;
+        MemberAcc.RESET;
+        MemberAcc.SETRANGE("Owner Member No",Account."Owner Member No");
+        MemberAcc.SETRANGE("Account Type",'LOAN');
+        IF MemberAcc.FINDSET THEN BEGIN
+
+         REPEAT
+            MemberAcc.CALCFIELDS("Balance (LCY)");
+            balanc:=balanc+MemberAcc."Balance (LCY)";
+          UNTIL MemberAcc.NEXT=0;
+           GenJournalLine.RESET;
+          GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+          GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",'SpotCash');
+          GenJournalLine.DELETEALL;
+
+          IF DefaultBatch.GET('PURCHASES','SpotCash') THEN
+          DefaultBatch.DELETE;
+
+          //POSTING MAIN TRANSACTION
+
+          DefaultBatch.INIT;
+          DefaultBatch."Journal Template Name":='PURCHASES';
+          DefaultBatch.Name:='SpotCash';
+          DefaultBatch.INSERT;
+
+              GenJournalLine2.INIT;
+              GenJournalLine2."Journal Template Name":='PURCHASES';
+              GenJournalLine2."Journal Batch Name":='SpotCash';
+              GenJournalLine2."Document No.":=request_id;
+              GenJournalLine5.RESET;
+              GenJournalLine5.SETRANGE("Journal Template Name",'PURCHASES');
+              GenJournalLine5.SETRANGE("Journal Batch Name",'SpotCash');
+              IF GenJournalLine5.FIND('+') THEN BEGIN
+              GenJournalLine2."Line No.":=GenJournalLine5."Line No."+10000;
+              END;
+              //GenJournalLine."Line No.":=LineNo;
+
+              GenJournalLine2."Posting Date":=TODAY;
+              GenJournalLine2.Description:=FORMAT(phone_no)+'-SpotCash Enquiry Charges';
+
+              GenJournalLine2."Account Type":=GenJournalLine2."Account Type"::Vendor;
+              GenJournalLine2."Account No.":=Account."No.";
+              GenJournalLine2."Shortcut Dimension 1 Code":=Account."Global Dimension 1 Code";
+              GenJournalLine2.VALIDATE(GenJournalLine2."Shortcut Dimension 1 Code");
+              TransactionTypes.RESET;
+              TransactionTypes.SETRANGE(Type,TransactionTypes.Type::SpotEnq);
+              IF TransactionTypes.FIND('-') THEN BEGIN
+                TransactionCharges.RESET;
+                TransactionCharges.SETRANGE("Transaction Type",TransactionTypes.Code);
+                IF TransactionCharges.FIND('-') THEN BEGIN
+                 // GenJournalLine2."Account No.":=TransactionCharges."GL Account";
+                  GenJournalLine2.Amount:=(TransactionCharges."Charge Amount"+TransactionCharges."Settlement Amount");
+                  GenJournalLine2.Amount:=GenJournalLine2.Amount;
+                END;
+                GenJournalLine2.VALIDATE(GenJournalLine2.Amount);
+              END;
+            //END;
+
+              GenJournalLine2.VALIDATE(GenJournalLine2.Amount);
+             // GenJournalLine2."Bal. Account Type":=GenJournalLine2."Bal. Account Type"::"G/L Account";
+              //GenJournalLine2."Bal. Account No.":=scharges."GL Account";
+              IF GenJournalLine2.Amount<>0 THEN
+                GenJournalLine2.INSERT;
+              END;
+
+            //post sacco charge
+            GenJournalLine.RESET;
+            GenJournalLine.INIT;
+            GenJournalLine."Journal Template Name":='PURCHASES';
+            GenJournalLine."Journal Batch Name":='SpotCash';
+            GenJournalLine."Document No.":=request_id;
+            GenJournalLine5.RESET;
+            GenJournalLine5.SETRANGE("Journal Template Name",'PURCHASES');
+            GenJournalLine5.SETRANGE("Journal Batch Name",'SpotCash');
+            IF GenJournalLine5.FIND('+') THEN BEGIN
+            GenJournalLine."Line No.":=GenJournalLine5."Line No."+10000;
+            END;
+            //GenJournalLine."Line No.":=LineNo;
+            GenJournalLine."Posting Date":=TODAY;
+            GenJournalLine.Description:=FORMAT(phone_no)+'-SpotCash Enquiry Charges';
+            GenJournalLine."Account Type":=GenJournalLine."Account Type"::"G/L Account";
+            GenJournalLine."Shortcut Dimension 1 Code":=Members."Global Dimension 1 Code";
+            GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 1 Code");
+            TransactionTypes.RESET;
+            TransactionTypes.SETRANGE(Type,TransactionTypes.Type::SpotEnq);
+            IF TransactionTypes.FIND('-') THEN BEGIN
+              TransactionCharges.RESET;
+              TransactionCharges.SETRANGE("Transaction Type",TransactionTypes.Code);
+              IF TransactionCharges.FIND('-') THEN BEGIN
+
+                GenJournalLine."Account No.":=TransactionCharges."GL Account";
+                GenJournalLine.Amount:=-TransactionCharges."Charge Amount";
+                GenJournalLine.VALIDATE(GenJournalLine.Amount);
+              END;
+            END;
+            IF GenJournalLine.Amount<>0 THEN
+            GenJournalLine.INSERT;
+
+
+
+            //post settlement charge
+
+
+                GenJournalLine1.RESET;
+                GenJournalLine1.INIT;
+                GenJournalLine1."Journal Template Name":='PURCHASES';
+                GenJournalLine1."Journal Batch Name":='SpotCash';
+                GenJournalLine1."Document No.":=request_id;
+                GenJournalLine5.RESET;
+                GenJournalLine5.SETRANGE("Journal Template Name",'PURCHASES');
+                GenJournalLine5.SETRANGE("Journal Batch Name",'SpotCash');
+                IF GenJournalLine5.FIND('+') THEN BEGIN
+                GenJournalLine1."Line No.":=GenJournalLine5."Line No."+10000;
+                END;
+                //GenJournalLine."Line No.":=LineNo;
+                GenJournalLine1."Posting Date":=TODAY;
+                GenJournalLine1.Description:=FORMAT(phone_no)+'-SpotCash Enquiry Charges';
+                GenJournalLine1."Account Type":=GenJournalLine1."Account Type"::"G/L Account";
+                GenJournalLine1."Shortcut Dimension 1 Code":=Members."Global Dimension 1 Code";
+                GenJournalLine1.VALIDATE(GenJournalLine1."Shortcut Dimension 1 Code");
+                TransactionTypes.RESET;
+                TransactionTypes.SETRANGE(Type,TransactionTypes.Type::SpotEnq);
+                IF TransactionTypes.FIND('-') THEN BEGIN
+                TransactionCharges.RESET;
+                TransactionCharges.SETRANGE("Transaction Type",TransactionTypes.Code);
+                IF TransactionCharges.FIND('-') THEN BEGIN
+
+                  GenJournalLine1."Account No.":=TransactionCharges."Settlement GL Account";
+                  GenJournalLine1.Amount:=-TransactionCharges."Settlement Amount";
+                  GenJournalLine1.VALIDATE(GenJournalLine1.Amount);
+                END;
+                END;
+                IF GenJournalLine1.Amount<>0 THEN
+                GenJournalLine1.INSERT;
+
+              //POST TRANSACTIONS
+              GenJournalLine.RESET;
+              GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+              GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",'SpotCash');
+              CODEUNIT.RUN(CODEUNIT::"Gen. Jnl.-Post",GenJournalLine);
+              //balanc:=balanc*-1;
+            //balance:=FORMAT(balanc);
+            message:=FORMAT(MemberAcc.Status);
+            status:='1';
+            response:='00';
+            "response message":='success';
+        END ELSE BEGIN
+          status:='1';
+          response:='03';
+          "response message":='Account not found';
+          EXIT;
+        END;
+       //END;
+       }
+
+      // Stop ATM Request
+       IF transaction_type=14 THEN BEGIN
+         ATMRegister.RESET;
+         ATMRegister.SETRANGE("Account No",Account."No.");
+         IF ATMRegister.FIND('-') THEN BEGIN
+           ATMRegister."Card Status":=ATMRegister."Card Status"::Frozen;
+           ATMRegister.MODIFY;
+         END ELSE BEGIN
+           response:='03';
+           "response message":='Account not found';
+           status:='1';
+         END;
+       END;
+
+      // Request Transfer
+       IF transaction_type=15 THEN BEGIN
+              CalcAvailableBalance(Account."No.");
+              GeneralSetup.GET;
+              balance:=FORMAT(AvailableBalance);
+              IF balance<amount THEN BEGIN
+                balance:=FORMAT(AvailableBalance);
+                response:='01';
+                "response message":='insufficient funds';
+                EXIT;
+              END;
+              //post transfer
+              // DELETE ANY LINE ITEM THAT MAY BE PRESENT
+                GenJournalLine.RESET;
+                GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+                GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",'SpotCash');
+                GenJournalLine.DELETEALL;
+
+                IF DefaultBatch.GET('PURCHASES','SpotCash') THEN
+                DefaultBatch.DELETE;
+
+                //POSTING MAIN TRANSACTION
+
+                DefaultBatch.INIT;
+                DefaultBatch."Journal Template Name":='PURCHASES';
+                DefaultBatch.Name:='SpotCash';
+                DefaultBatch.INSERT;
+
+                GenJournalLine.INIT;
+                GenJournalLine."Journal Template Name":='PURCHASES';
+                GenJournalLine."Journal Batch Name":='SpotCash';
+                GenJournalLine."Document No.":=request_id;
+                GenJournalLine."External Document No.":=request_id;
+                GenJournalLine."Line No.":=10000;
+                GenJournalLine."Account Type":=GenJournalLine."Account Type"::Vendor;
+                GenJournalLine."Account No.":=Account."No.";
+                GenJournalLine.VALIDATE(GenJournalLine."Account No.");
+                GenJournalLine."Posting Date":=TODAY;
+
+                ///////////////
+                AccountHolders.RESET;
+                AccountHolders.SETRANGE(AccountHolders."No.",Members."No.");
+                IF AccountHolders.FIND('-') THEN BEGIN
+                GenJournalLine."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+                GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 1 Code");
+                GenJournalLine."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+                GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 2 Code");
+                END;
+                GenJournalLine.Description:=FORMAT(phone_no)+'-Spotcash Funds Transfer';
+                //GenJournalLine."Currency Code":="Currency Code";
+                GenJournalLine.VALIDATE(GenJournalLine."Currency Code");
+
+                EVALUATE(GenJournalLine.Amount,amount);
+
+
+                GenJournalLine.VALIDATE(GenJournalLine.Amount);
+
+                GenJournalLine."Bal. Account Type":=GenJournalLine."Bal. Account Type"::Vendor;
+                GenJournalLine."Bal. Account No.":=cr_account;
+                GenJournalLine.VALIDATE(GenJournalLine."Bal. Account No.");
+                GenJournalLine.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+                IF GenJournalLine.Amount<>0 THEN
+                  GenJournalLine.INSERT;
+                //END;
+
+
+              //POST TRANSACTIONS
+              GenJournalLine.RESET;
+              GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+              GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",'SpotCash');
+              CODEUNIT.RUN(CODEUNIT::"Gen. Jnl.-Post",GenJournalLine);
+              CalcAvailableBalance(Account."No.");
+              balance:=FORMAT(AvailableBalance);
+              status:='1';
+              response:='00';
+              "response message":='success';
+            END;
+
+
+
+      // Share contribution
+      IF transaction_type=7 THEN BEGIN
+        MemberAcc.RESET;
+        MemberAcc.SETRANGE("Owner Member No",Account."Owner Member No");
+        //MemberAcc.SETRANGE("Account Type",cr_account);
+        MemberAcc.SETRANGE("Account Type",'BS102');
+        IF MemberAcc.FIND('-') THEN BEGIN
+            // DELETE ANY LINE ITEM THAT MAY BE PRESENT
+                GenJournalLine.RESET;
+                GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+                GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",Account."Owner Member No");
+                GenJournalLine.DELETEALL;
+
+                IF DefaultBatch.GET('PURCHASES',Account."Owner Member No") THEN
+                DefaultBatch.DELETE;
+
+                //POSTING MAIN TRANSACTION
+
+                DefaultBatch.INIT;
+                DefaultBatch."Journal Template Name":='PURCHASES';
+                DefaultBatch.Name:=Account."Owner Member No";
+                DefaultBatch.INSERT;
+
+                GenJournalLine.INIT;
+                GenJournalLine."Journal Template Name":='PURCHASES';
+                GenJournalLine."Journal Batch Name":=Account."Owner Member No";
+                GenJournalLine."Document No.":=request_id;
+                GenJournalLine."External Document No.":=request_id;
+                GenJournalLine."Line No.":=10000;
+                GenJournalLine."Account Type":=GenJournalLine."Account Type"::Vendor;
+                GenJournalLine."Account No.":=MemberAcc."No.";
+                GenJournalLine.VALIDATE(GenJournalLine."Account No.");
+                GenJournalLine."Posting Date":=TODAY;
+
+                ///////////////
+                AccountHolders.RESET;
+                AccountHolders.SETRANGE(AccountHolders."No.",Members."No.");
+                IF AccountHolders.FIND('-') THEN BEGIN
+                GenJournalLine."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+                GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 1 Code");
+                GenJournalLine."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+                GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 2 Code");
+                END;
+                GenJournalLine.Description:=FORMAT(phone_no)+'-Spotcash Share contribution';
+                //GenJournalLine."Currency Code":="Currency Code";
+                GenJournalLine.VALIDATE(GenJournalLine."Currency Code");
+
+                EVALUATE(GenJournalLine.Amount,amount);
+                GenJournalLine.Amount:=-1*GenJournalLine.Amount;
+
+                GenJournalLine.VALIDATE(GenJournalLine.Amount);
+
+                GenJournalLine."Bal. Account Type":=GenJournalLine."Bal. Account Type"::"G/L Account";
+                GeneralSetup.GET;
+                GenJournalLine."Bal. Account No.":=GeneralSetup."SpotCash Control Account";
+                GenJournalLine.VALIDATE(GenJournalLine."Bal. Account No.");
+                GenJournalLine.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+                IF GenJournalLine.Amount<>0 THEN
+                  GenJournalLine.INSERT;
+                  //POST TRANSACTIONS
+                  GenJournalLine.RESET;
+                  GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+                  GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",Account."Owner Member No");
+                  CODEUNIT.RUN(CODEUNIT::"Gen. Jnl.-Post",GenJournalLine);
+                  CalcAvailableBalance(Account."No.");
+                  balance:=FORMAT(AvailableBalance);
+                  status:='1';
+                  response:='00';
+                  "response message":='success';
+                 END;
+                END;
+
+      // Loan Repayment
+      IF transaction_type=6 THEN BEGIN
+        LoanProductTypes.RESET;
+        LoanProductTypes.SETRANGE("spotcash Code",cr_account);
+        IF LoanProductTypes.FIND('-') THEN BEGIN
+         apploanproduct:=LoanProductTypes.Code;
+        END;
+        MemberAcc.RESET;
+        MemberAcc.CALCFIELDS("Balance (LCY)");
+        MemberAcc.SETFILTER("Balance (LCY)",'<>%1',0);
+        MemberAcc.SETRANGE("Owner Member No",Account."Owner Member No");
+        MemberAcc.SETRANGE("Vendor Posting Group",apploanproduct);
+       // MemberAcc.SETRANGE("Vendor Posting Group",cr_account);
+        IF MemberAcc.FIND('-') THEN BEGIN
+          // DELETE ANY LINE ITEM THAT MAY BE PRESENT
+                GenJournalLine.RESET;
+                GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+                GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",'SpotCash');
+                GenJournalLine.DELETEALL;
+
+                IF DefaultBatch.GET('PURCHASES','SpotCash') THEN
+                DefaultBatch.DELETE;
+
+                //POSTING MAIN TRANSACTION
+
+                DefaultBatch.INIT;
+                DefaultBatch."Journal Template Name":='PURCHASES';
+                DefaultBatch.Name:='SpotCash';
+                DefaultBatch.INSERT;
+
+                GenJournalLine.INIT;
+                GenJournalLine."Journal Template Name":='PURCHASES';
+                GenJournalLine."Journal Batch Name":='SpotCash';
+                GenJournalLine."Document No.":=request_id;
+                GenJournalLine."External Document No.":=request_id;
+                GenJournalLine."Line No.":=10000;
+                GenJournalLine."Account Type":=GenJournalLine."Account Type"::Vendor;
+                GenJournalLine."Account No.":=MemberAcc."No.";
+                GenJournalLine.VALIDATE(GenJournalLine."Account No.");
+                GenJournalLine."Posting Date":=TODAY;
+
+                ///////////////
+                AccountHolders.RESET;
+                AccountHolders.SETRANGE(AccountHolders."No.",Members."No.");
+                IF AccountHolders.FIND('-') THEN BEGIN
+                GenJournalLine."Shortcut Dimension 1 Code":=AccountHolders."Global Dimension 1 Code";
+                GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 1 Code");
+                GenJournalLine."Shortcut Dimension 2 Code":=AccountHolders."Global Dimension 2 Code";
+                GenJournalLine.VALIDATE(GenJournalLine."Shortcut Dimension 2 Code");
+                END;
+                GenJournalLine.Description:=FORMAT(phone_no)+'-Spotcash Loan Repayment';
+                //GenJournalLine."Currency Code":="Currency Code";
+                GenJournalLine.VALIDATE(GenJournalLine."Currency Code");
+
+                EVALUATE(GenJournalLine.Amount,amount);
+                GenJournalLine.Amount:=-1*GenJournalLine.Amount;
+
+                GenJournalLine.VALIDATE(GenJournalLine.Amount);
+                GenJournalLine."Transaction Type":=GenJournalLine."Transaction Type"::Repayment;
+                GenJournalLine."Bal. Account Type":=GenJournalLine."Bal. Account Type"::"G/L Account";
+                GeneralSetup.GET;
+                GenJournalLine."Bal. Account No.":=GeneralSetup."SpotCash Control Account";
+                GenJournalLine.VALIDATE(GenJournalLine."Bal. Account No.");
+                GenJournalLine.VALIDATE("Shortcut Dimension 1 Code",Dimensioncode);
+                IF GenJournalLine.Amount<>0 THEN
+                  GenJournalLine.INSERT;
+                  //POST TRANSACTIONS
+                  GenJournalLine.RESET;
+                  GenJournalLine.SETRANGE(GenJournalLine."Journal Template Name",'PURCHASES');
+                  GenJournalLine.SETRANGE(GenJournalLine."Journal Batch Name",'SpotCash');
+                  IF GenJournalLine.FIND('-') THEN BEGIN
+                  CODEUNIT.RUN(CODEUNIT::"Gen. Jnl.-Post",GenJournalLine);
+                  CalcAvailableBalance(Account."No.");
+                  balance:=FORMAT(AvailableBalance);
+                  status:='1';
+                  response:='00';
+                  "response message":='success';
+                  END;
+        END ELSE BEGIN
+          status:='1';
+          response:='03';
+          "response message":='Account not found';
+          EXIT;
+        END;
+       //END;
+      status:='1';
+      response:='00';
+      "response message":='success';
+      {END ELSE BEGIN
+        status:=1;
+        response:='03';
+        "response message":='Account not found';}
+      END;
+       IF amount='' THEN
+       amount:='0';
+       IF charges='' THEN
+       charges:='0';
+       IF balance='' THEN
+       balance:='0';
+
+
+
+      END;
+    END;
+
+    PROCEDURE CalcAvailableBalance@1000000000(AccountNo@1000 : Code[50]);
+    BEGIN
+      Members.GET(AccountNo);
+      ATMBalance:=0;
+      TransactionCharges.RESET;
+      //TransactionCharges.SETRANGE(TransactionCharges."Transaction Type","Transaction Type");
+
+      TCharges:=0;
+      AvailableBalance:=0;
+      MinAccBal:=0;
+      TotalUnprocessed:=0;
+      Members.CALCFIELDS("Balance (LCY)");
+      BookBalance:=Members."Balance (LCY)";
+      AccountTypes.RESET;
+      AccountTypes.SETRANGE(AccountTypes.Code,Members."Account Type");
+
+
+      IF AccountTypes.FIND('-') THEN BEGIN
+      MinAccBal:=AccountTypes."Minimum Balance";
+      FeeBelowMinBal:=AccountTypes."Fee Below Minimum Balance";
+      END;
+
+      //IF Posted=FALSE THEN BEGIN
+
+      //IF TransactionCharges.FIND('-') THEN
+
+
+
+      //UNCLEARED CHEQUES
+      chqtransactions.RESET;
+      chqtransactions.SETRANGE(chqtransactions."Account No",Members."No.");
+      chqtransactions.SETRANGE(chqtransactions.Deposited,TRUE);
+      chqtransactions.SETRANGE(chqtransactions."Cheque Processed",FALSE);
+
+      IF chqtransactions.FIND('-') THEN BEGIN
+
+      REPEAT
+
+      TotalUnprocessed:=TotalUnprocessed+chqtransactions.Amount;
+
+      UNTIL chqtransactions.NEXT=0;
+
+      END;
+
+      //ATM BALANCE
+      AccountHolders.RESET;
+      AccountHolders.SETRANGE(AccountHolders."No.",Members."No.");
+      IF AccountHolders.FIND('-') THEN BEGIN
+      AccountHolders.CALCFIELDS(AccountHolders."ATM Transactions");
+      ATMBalance:=AccountHolders."ATM Transactions";
+      END;
+
+
+
+      IF LoanGuaranteed<0 THEN
+      LoanGuaranteed:=0;
+
+      IF UnClearedBalance<0 THEN
+      UnClearedBalance:=0;
+
+      AccountTypes.RESET;
+      IF AccountTypes.GET(Members."Account Type") THEN BEGIN
+
+      IF AccountTypes."Fixed Deposit"=FALSE THEN BEGIN
+      IF Members."Balance (LCY)"<MinAccBal THEN BEGIN
+      AvailableBalance:=Members."Balance (LCY)"-FeeBelowMinBal-TCharges-IntervalPenalty-MinAccBal-TotalUnprocessed-ATMBalance-Members."Frozen Amount";
+      END
+      ELSE BEGIN
+      AvailableBalance:=Members."Balance (LCY)"-TCharges-IntervalPenalty-MinAccBal-TotalUnprocessed-ATMBalance-Members."Frozen Amount";
+      END;
+      END
+      ELSE BEGIN
+      //AvailableBalance:="Book Balance"-TCharges;
+      AvailableBalance:=Members."Balance (LCY)"-TCharges-ChargesOnFD-Members."Frozen Amount";
+      END;
+      END;
+    END;
+
+    PROCEDURE VirtualBankingMemberRegistration@13(VAR FirstName@1000 : Code[20];VAR MiddleName@1001 : Code[20];VAR LastName@1002 : Code[20];VAR IDNumber@1003 : Code[20];VAR DateOfBirth@1004 : Date;VAR Gender@1005 : Code[10];VAR Email@1006 : Code[20];VAR PhoneNumber@1007 : Code[20];VAR Success@1008 : Code[10]);
+    BEGIN
+
+      TempPhoneNo:=COPYSTR(PhoneNumber,1,2);
+      IF TempPhoneNo='07' THEN
+         FinalPhone:='254'+COPYSTR(PhoneNumber,2,20)
+      ELSE
+        FinalPhone:=PhoneNumber;
+      //Replace 07 with 254
+      PhoneNumber:=FinalPhone;
+
+      //<<<<
+      //Check if Number is already registered
+      SpotCashRegistration.RESET;
+      SpotCashRegistration.SETRANGE("Phone No",PhoneNumber);
+      IF SpotCashRegistration.FINDFIRST THEN
+        ERROR('The Phone Number %1 has already been used',PhoneNumber);
+
+      //Check if ID Number is already used
+      Customer.RESET;
+      Customer.SETRANGE("Identification No.",IDNumber);
+      IF Customer.FINDFIRST THEN
+        ERROR('The ID Number %1 has already been used',IDNumber);
+
+      Customer.RESET;
+      Customer.SETRANGE("Mobile Phone No",PhoneNumber);
+      IF Customer.FINDFIRST THEN
+        ERROR('The Mobile Phone Number %1 has already been used',PhoneNumber);
+
+      FOSASetup.GET;
+      GeneralSetup.GET;
+      TempMemberNo:=NoSeriesManagement.GetNextNo(FOSASetup."Member Nos",TODAY,TRUE);
+      MemberNo:='001'+TempMemberNo;
+      FullName:=FirstName+' '+MiddleName+' '+LastName;
+      Customer.INIT;
+      Customer."No.":=MemberNo;
+      Customer.Name:=FullName;
+      Customer."Search Name":=FullName;
+      Customer."Mobile Phone No":=PhoneNumber;
+      Customer."First Name":=FirstName;
+      Customer."Middle Name":=MiddleName;
+      Customer.Surname:=LastName;
+      Customer."Member No":=MemberNo;
+      EVALUATE(Customer.Gender,Gender);
+      Customer."Identification No.":=IDNumber;
+      Customer."Date Of Birth":=DateOfBirth;
+      Customer.Status:=Customer.Status::"Not Approved";
+      Customer."Member Category":='INDIVIDUALS';
+      Customer."E-Mail":=Email;
+      DimensionValueBD.RESET;
+      DimensionValueBD.SETRANGE("Global Dimension No.",1);
+      IF DimensionValueBD.FINDFIRST THEN BEGIN
+         Customer."Global Dimension 1 Code":=DimensionValueBD.Code;
+      END;
+      Customer.FID:='SPOTCASH';
+      Ok:=Customer.INSERT;
+
+      //open Accounts;
+      IF Ok THEN BEGIN
+        Success:='00';
+        AccountTypes.RESET;
+        AccountTypes.SETRANGE("Open Automaticaly",TRUE);
+        IF AccountTypes.FINDSET THEN BEGIN
+          TempAcc:='';
+          REPEAT
+            IF AccountTypes."ATM/Spotcash use" THEN
+              TempAcc:=MemberNo+AccountTypes.Code;
+            IF NOT Vendor.GET(MemberNo+AccountTypes.Code) THEN BEGIN
+              Vendor.INIT;
+              Vendor."No.":=MemberNo+AccountTypes.Code;
+              Vendor."Global Dimension 1 Code":=Customer."Global Dimension 1 Code";
+              Vendor."Account Type":=AccountTypes.Code;
+              Vendor."Vendor Posting Group":=AccountTypes.Code;
+              Vendor.Name:=AccountTypes.Description;
+              Vendor."Owner Member No":=MemberNo;
+              Vendor."Owner Name":=FullName;
+              Vendor."ATM/Spotcash use":=AccountTypes."ATM/Spotcash use";
+              Vendor."Debtor Type":=Vendor."Debtor Type"::"FOSA Account";
+              Vendor."Mobile Banking Allowed":=AccountTypes."Mobile Banking Allowed";
+              Vendor."ID No":=IDNumber;
+              Vendor."Phone No.":=PhoneNumber;
+              Vendor."Salary Payout Allowed":=AccountTypes."Salary Payout Allowed";
+              Vendor."Cash Deposit Allowed":=AccountTypes."Cash Deposit Allowed";
+              Vendor."Cash Withdrawal Allowed":=FALSE;
+              Vendor."Cash Transfer Allowed":=FALSE;
+              Vendor."Cheque Deposit Allowed":=AccountTypes."Cheque Deposit Allowed";
+              Vendor."ATM/Spotcash use":=AccountTypes."ATM/Spotcash use";
+              Vendor."Mobile Banking Allowed":=AccountTypes."Mobile Banking Allowed";
+              Vendor."Account Remarks":='Virtual Banking';
+              Vendor.INSERT;
+            END;
+          UNTIL AccountTypes.NEXT = 0;
+        END;
+        SavingsAcc:=TempAcc;
+        IF SavingsAcc='' THEN BEGIN
+          SavingsAcc:=MemberNo+'01';
+          IF NOT Vendor.GET(SavingsAcc) THEN BEGIN
+            AccountTypes.GET('01');
+            Vendor.INIT;
+            Vendor."No.":=MemberNo+AccountTypes.Code;
+            Vendor."Global Dimension 1 Code":=Customer."Global Dimension 1 Code";
+            Vendor."Account Type":=AccountTypes.Code;
+            Vendor."Vendor Posting Group":=AccountTypes.Code;
+            Vendor.Name:=AccountTypes.Description;
+            Vendor."Owner Member No":=MemberNo;
+            Vendor."Owner Name":=FullName;
+            Vendor."ATM/Spotcash use":=AccountTypes."ATM/Spotcash use";
+            Vendor."Debtor Type":=Vendor."Debtor Type"::"FOSA Account";
+            Vendor."Mobile Banking Allowed":=AccountTypes."Mobile Banking Allowed";
+            Vendor."ID No":=IDNumber;
+            Vendor."Phone No.":=PhoneNumber;
+            Vendor."Salary Payout Allowed":=AccountTypes."Salary Payout Allowed";
+            Vendor."Cash Deposit Allowed":=AccountTypes."Cash Deposit Allowed";
+            Vendor."Cash Withdrawal Allowed":=FALSE;
+            Vendor."Cash Transfer Allowed":=FALSE;
+            Vendor."Cheque Deposit Allowed":=AccountTypes."Cheque Deposit Allowed";
+            Vendor."ATM/Spotcash use":=AccountTypes."ATM/Spotcash use";
+            Vendor."Mobile Banking Allowed":=AccountTypes."Mobile Banking Allowed";
+            Vendor."Account Remarks":='Virtual Banking';
+            Vendor.INSERT;
+          END;
+        END;
+
+        {
+        //register Spotcash
+        IF NOT SpotCashRegistration.GET(PhoneNumber,SpotCashRegistration."Service Type"::"Mobile Banking",SavingsAcc) THEN BEGIN
+          SpotCashRegistration.INIT;
+          SpotCashRegistration."Account No":=SavingsAcc;
+          SpotCashRegistration."Phone No":=PhoneNumber;
+          SpotCashRegistration."ID Number":=IDNumber;
+          SpotCashRegistration."Member Name":=FullName;
+          SpotCashRegistration."Member Code":=MemberNo;
+          SpotCashRegistration."Service Type":=SpotCashRegistration."Service Type"::"Mobile Banking";
+          SpotCashRegistration."Date Registered":=TODAY;
+          SpotCashRegistration."Global Dimension 1 Code":='001';
+          SpotCashRegistration."SpotCash Status":=SpotCashRegistration."SpotCash Status"::Active;
+          SpotCashRegistration.Alerts:=TRUE;
+          SpotCashRegistration."Date Registered":=TODAY;
+          SpotCashRegistration."Portal Status":=FALSE;
+          SpotCashRegistration."Date Activated":=TODAY;
+          SpotCashRegistration.INSERT;
+          ReqID:=NoSeriesManagement.GetNextNo(GeneralSetup."Spotcash Nos.",TODAY,TRUE);
+          SpotCashEntries.INIT;
+          SpotCashEntries."Request ID":=ReqID;
+          SpotCashEntries.Message:='Spotcash Registration by Virtual Banking';
+          SpotCashEntries."Phone No":=PhoneNumber;
+          SpotCashEntries."Transaction Type":=1;
+          SpotCashEntries.Amount:=0;
+          SpotCashEntries.Charges:=0;
+          SpotCashEntries."Account No":='';
+          SpotCashEntries."Cr Account No":='';
+          SpotCashEntries.INSERT;
+        END;
+        }
+      END;
+    END;
+
+    BEGIN
+    END.
+  }
+}
+
