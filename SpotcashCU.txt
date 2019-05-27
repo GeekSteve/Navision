@@ -3,7 +3,7 @@ OBJECT Codeunit 50001 SpotCash
   OBJECT-PROPERTIES
   {
     Date=05/27/19;
-    Time=11:26:47 AM;
+    Time=11:38:46 AM;
     Modified=Yes;
     Version List=;
   }
@@ -260,13 +260,27 @@ OBJECT Codeunit 50001 SpotCash
       END;
 
 
-         ERROR('Testing Code..');
-         Vendor.RESET;
-         IF Vendor.GET("account _number") THEN BEGIN
+
+
+      SPotcashMembers.RESET;
+      SPotcashMembers.SETRANGE("Member Code","account _number");
+      IF SPotcashMembers.FINDSET THEN BEGIN
+         "account _number":=SPotcashMembers."Account No";
+         Vendor.GET("account _number");
+         IF Vendor.Status<>Vendor.Status::Active THEN BEGIN
+            Vendor.Status:=Vendor.Status::Active;
+            Vendor.MODIFY;
+            COMMIT;
          END;
+         IF Vendor.Blocked=Vendor.Blocked::All THEN BEGIN
+            Vendor.Blocked:=Vendor.Blocked::" ";
+            Vendor.MODIFY;
+            COMMIT;
+         END;
+      END;
 
 
-
+      ERROR('Testing git from here....');
 
 
       IF transaction_type=5 THEN BEGIN
