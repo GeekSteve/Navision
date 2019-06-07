@@ -3,7 +3,7 @@ OBJECT Codeunit 50001 SpotCash
   OBJECT-PROPERTIES
   {
     Date=06/07/19;
-    Time=10:54:32 AM;
+    Time=12:36:31 PM;
     Modified=Yes;
     Version List=;
   }
@@ -406,16 +406,15 @@ OBJECT Codeunit 50001 SpotCash
                                                phone_no:=phone_no;
                                                transaction_type:=transaction_type;
                                                amount:=amount;
-                                               charges:=charges;
-                                               "account _number":="account _number";
-                                               cr_account:=cr_account;
-                                               IF SpotCashEntries.Posted THEN BEGIN
-                                                 status:='Success';
-                                               END;
-                                               f_key:=f_key;
-                                               balance:=FORMAT(SpotCashEntries.Balance);
-                                               response:='00';
-                                               "response message":='Transaction was a Success';
+                                               //
+                                                ERROR('This code is to test Commit');
+                                                CustomerCheckID.RESET;
+                                                CustomerCheckID.SETRANGE("Identification No.",SpotcashDepositsBuffer."Transacted By ID");
+                                                IF NOT CustomerCheckID.FINDSET THEN BEGIN
+                                                    SpotcashDepositsBuffer."Transacted By ID":=COPYSTR(cr_account,1,6);
+                                                    SpotcashDepositsBuffer."Deposit to Code":=COPYSTR(cr_account,7);
+                                                END;
+                                               //
 
 
                           EXIT;
@@ -430,7 +429,29 @@ OBJECT Codeunit 50001 SpotCash
 
 
 
-
+      //====if it is a spotcash Deposit paybill resubmit========================
+      IF transaction_type=600 THEN BEGIN
+         SpotcashDepositsBuffer.RESET;
+         SpotcashDepositsBuffer.SETRANGE(RequestID,request_id);
+         IF SpotcashDepositsBuffer.FINDLAST THEN BEGIN
+                                     request_id:=request_id;
+                                     phone_no:=phone_no;
+                                     transaction_type:=transaction_type;
+                                     amount:=amount;
+                                     charges:=charges;
+                                     "account _number":="account _number";
+                                     cr_account:=cr_account;
+                                     IF SpotCashEntries.Posted THEN BEGIN
+                                       status:='Success';
+                                     END;
+                                     f_key:=f_key;
+                                     balance:=FORMAT(SpotCashEntries.Balance);
+                                     response:='00';
+                                     "response message":='Sacco paybill Deposit Transaction was a Success';
+                                     EXIT;
+         END;
+      END;
+      //====end if is a spotcash Deposit paybill resubmit=======================
 
       //====if it is a REVERSAL resubmit========================
       IF transaction_type=100 THEN BEGIN
@@ -535,31 +556,7 @@ OBJECT Codeunit 50001 SpotCash
          END;
       END;
       //====end if is a ELOAN resubmit=======================
-      //testing GitHUB
-      //====if it is a spotcash Deposit paybill resubmit========================
-      IF transaction_type=600 THEN BEGIN
-         SpotcashDepositsBuffer.RESET;
-         SpotcashDepositsBuffer.SETRANGE(RequestID,request_id);
-         IF SpotcashDepositsBuffer.FINDLAST THEN BEGIN
-                                     request_id:=request_id;
-                                     phone_no:=phone_no;
-                                     transaction_type:=transaction_type;
-                                     amount:=amount;
-                                     charges:=charges;
-                                     "account _number":="account _number";
-                                     cr_account:=cr_account;
-                                     IF SpotCashEntries.Posted THEN BEGIN
-                                       status:='Success';
-                                     END;
-                                     f_key:=f_key;
-                                     balance:=FORMAT(SpotCashEntries.Balance);
-                                     response:='00';
-                                     "response message":='Added code to test github';
-                                     EXIT;
-         END;
-      END;
-      //====end if is a spotcash Deposit paybill resubmit=======================
-      //
+
 
       //Brian K
       //If it is being Resubmitted Clear Previous Entry========= & not in Ledgers
