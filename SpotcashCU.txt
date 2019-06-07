@@ -3,7 +3,7 @@ OBJECT Codeunit 50001 SpotCash
   OBJECT-PROPERTIES
   {
     Date=06/07/19;
-    Time=12:36:31 PM;
+    Time=12:49:40 PM;
     Modified=Yes;
     Version List=;
   }
@@ -406,15 +406,16 @@ OBJECT Codeunit 50001 SpotCash
                                                phone_no:=phone_no;
                                                transaction_type:=transaction_type;
                                                amount:=amount;
-                                               //
-                                                ERROR('This code is to test Commit');
-                                                CustomerCheckID.RESET;
-                                                CustomerCheckID.SETRANGE("Identification No.",SpotcashDepositsBuffer."Transacted By ID");
-                                                IF NOT CustomerCheckID.FINDSET THEN BEGIN
-                                                    SpotcashDepositsBuffer."Transacted By ID":=COPYSTR(cr_account,1,6);
-                                                    SpotcashDepositsBuffer."Deposit to Code":=COPYSTR(cr_account,7);
-                                                END;
-                                               //
+                                               charges:=charges;
+                                               "account _number":="account _number";
+                                               cr_account:=cr_account;
+                                               IF SpotCashEntries.Posted THEN BEGIN
+                                                 status:='Success';
+                                               END;
+                                               f_key:=f_key;
+                                               balance:=FORMAT(SpotCashEntries.Balance);
+                                               response:='00';
+                                               "response message":='Transaction was a Success';
 
 
                           EXIT;
@@ -478,30 +479,13 @@ OBJECT Codeunit 50001 SpotCash
       //====end if is a REVERSAL resubmit=======================
 
 
-      //====if it is a Ministatement resubmit========================
-      IF transaction_type=12 THEN BEGIN
-         SpotCashEntries.RESET;
-         SpotCashEntries.SETRANGE("Request ID",request_id);
-         IF SpotCashEntries.FINDLAST THEN BEGIN
-                                     request_id:=request_id;
-                                     phone_no:=phone_no;
-                                     transaction_type:=transaction_type;
-                                     amount:=amount;
-                                     charges:=charges;
-                                     "account _number":="account _number";
-                                     cr_account:=cr_account;
-                                     IF SpotCashEntries.Posted THEN BEGIN
-                                       status:='Success';
-                                     END;
-                                     f_key:=f_key;
-                                     balance:=FORMAT(SpotCashEntries.Balance);
-                                     response:='00';
-                                     message:=SpotCashEntries.Message;
-                                     "response message":='Transaction was a success';
-                                     EXIT;
-         END;
-      END;
-      //====end if is a Ministatement resubmit=======================
+      //Removed code for ministatement Resubmit
+                ERROR('This is to track changes made on initial code');
+                request_id:=request_id;
+                phone_no:=phone_no;
+                transaction_type:=transaction_type;
+                amount:=amount;
+      //
 
       //====if it is a LOAN BAL resubmit========================
       IF transaction_type=10 THEN BEGIN
